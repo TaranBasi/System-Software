@@ -5,10 +5,30 @@
  */
 package ss_crswrk;
 
+import java.net.*;
+import java.io.*;
+
 /**
  *
  * @author Daniel
  */
 public class client {
-    
+    public static void main(String args[]) throws IOException {
+        String host = "localhost";
+        
+        int port = 19999;
+        
+        try {
+            
+            Socket server = new Socket(host, port);
+        
+            DataOutputStream outToServer = new DataOutputStream(server.getOutputStream());
+        
+            outToServer.writeUTF("hello");
+        
+            server.close();
+        }
+        catch (IOException f) {}
+        
+    }
 }
