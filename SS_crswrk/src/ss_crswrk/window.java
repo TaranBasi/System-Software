@@ -6,6 +6,10 @@
 package ss_crswrk;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
 
@@ -27,6 +31,8 @@ public class window extends javax.swing.JFrame {
         registerListModel = new DefaultListModel<String>();
         friendsListModel = new DefaultListModel<String>();
         initComponents();
+      
+
     }
 
     /**
@@ -202,6 +208,11 @@ public class window extends javax.swing.JFrame {
         });
 
         registerBtn.setText("Register");
+        registerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registerBtnActionPerformed(evt);
+            }
+        });
 
         orLbl.setText("or");
 
@@ -559,6 +570,7 @@ public class window extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void goToRegisterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToRegisterBtnActionPerformed
+        
         //Change screen from login to register
         parentPanel.removeAll();
         parentPanel.add(registerPanel);
@@ -603,6 +615,15 @@ public class window extends javax.swing.JFrame {
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         //take the user input (username and password) and compare it to the file to check if they exist
         
+        System.out.println("Button clicked");
+        String usernameStr = usernameTxtFld.getText().toString();
+        String passwordStr = passwordTxtFld.getText().toString();
+        String packetStr = "login/" + usernameStr + "/" + passwordStr;
+        
+        System.out.println("Made packet");
+        
+        setupClient(packetStr);
+        
         //Change screen from login to home
         parentPanel.removeAll();
         parentPanel.add(homePanel);
@@ -622,7 +643,17 @@ public class window extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_playBtnActionPerformed
 
-    
+    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
+
+    }//GEN-LAST:event_registerBtnActionPerformed
+
+    private void setupClient(String packet) {
+        try {
+            System.out.println("Setting up client");
+            client newClient = new client(packet);
+            newClient.main();
+        } catch (IOException ex) { }
+    }
     
     
     /**
