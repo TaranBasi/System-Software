@@ -13,18 +13,25 @@ import java.io.*;
  * @author Daniel
  */
 public class client {
-    public static void main(String args[]) throws IOException {
+    
+    static private String packetStr;
+    
+    client (String str) {
+        this.packetStr = str;
+    }
+    
+    public static void main() throws IOException {
         String host = "localhost";
         
         int port = 19999;
         
         try {
-            
+            System.out.println("Sending packet");
             Socket server = new Socket(host, port);
         
             DataOutputStream outToServer = new DataOutputStream(server.getOutputStream());
         
-            outToServer.writeUTF("hello");
+            outToServer.writeUTF(packetStr);
         
             server.close();
         }
