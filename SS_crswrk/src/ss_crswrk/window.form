@@ -27,7 +27,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[645, 708]"/>
+      <Dimension value="[645, 750]"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -44,7 +44,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-41,0,0,2,96"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-38,0,0,2,94"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -98,7 +98,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="167" max="32767" attributes="0"/>
+                      <EmptySpace pref="173" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -120,7 +120,7 @@
                           <Component id="goToRegisterBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="loginBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="376" max="32767" attributes="0"/>
+                      <EmptySpace pref="406" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -179,42 +179,73 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="registerBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="orLbl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="backToLoginBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="PoBLbl" min="-2" max="-2" attributes="0"/>
-                                  <Component id="rUsernameLbl" min="-2" max="-2" attributes="0"/>
-                                  <Component id="DoBLbl" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="registerBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="orLbl" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="backToLoginBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="rConfirmPasswordLbl" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="rPasswordLbl" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="PoBLbl" min="-2" max="-2" attributes="0"/>
+                                          <Component id="DoBLbl" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="rUsernameLbl" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" attributes="0">
+                                              <Component id="passwordDontMatch" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Component id="PoBTxtFld" pref="162" max="32767" attributes="0"/>
+                                          <Component id="rUsernameTxtFld" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="rPasswordTxtFld" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="DoBTxtFld" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="rConfirmPasswordTxtFld" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="rUsernameTxtFld" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="PoBTxtFld" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="DoBTxtFld" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                                      <Component id="musicProfileLbl" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="musicDropdown" alignment="0" min="-2" pref="223" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="addBtn" linkSize="3" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="deleteBtn" linkSize="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jScrollPane4" min="-2" pref="223" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="rRemoveMusicBtn" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="rAddMusicLbl" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="rImportMusicBtn" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jScrollPane2" min="-2" pref="223" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="addBtn" linkSize="3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="deleteBtn" linkSize="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="musicProfileLbl" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" alignment="0" pref="223" max="32767" attributes="0"/>
-                          <Component id="musicDropdown" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace pref="47" max="32767" attributes="0"/>
+                      <EmptySpace min="50" pref="50" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -224,43 +255,62 @@
                       <EmptySpace min="-2" pref="105" max="-2" attributes="0"/>
                       <Component id="musicProfileLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="rUsernameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="rUsernameTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="musicDropdown" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="PoBLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="PoBTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="DoBLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="DoBTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="addBtn" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="296" max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="backToLoginBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="registerBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="orLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
+                              <Component id="musicDropdown" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="51" max="32767" attributes="0"/>
+                              <Component id="jScrollPane4" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="deleteBtn" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="rUsernameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rUsernameTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="rPasswordTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rPasswordLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="rConfirmPasswordTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rConfirmPasswordLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="passwordDontMatch" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="PoBTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="PoBLbl" alignment="3" min="-2" pref="10" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="DoBTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DoBLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="deleteBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="addBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="rAddMusicLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="rImportMusicBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="rRemoveMusicBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="34" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="backToLoginBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="registerBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="orLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -268,7 +318,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="rUsernameLbl">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Username"/>
+                <Property name="text" type="java.lang.String" value="Username:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="backToLoginBtn">
@@ -305,6 +355,9 @@
             <Component class="javax.swing.JTextField" name="rUsernameTxtFld">
             </Component>
             <Component class="javax.swing.JTextField" name="PoBTxtFld">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PoBTxtFldActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="DoBTxtFld">
             </Component>
@@ -350,12 +403,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JList" name="jList1">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="registerListModel" type="code"/>
-                    </Property>
-                  </Properties>
+                <Component class="javax.swing.JList" name="rMusicList">
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
@@ -370,12 +418,71 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteBtnActionPerformed"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JTextField" name="rPasswordTxtFld">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rPasswordTxtFldActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="rPasswordLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Password:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="rConfirmPasswordTxtFld">
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rConfirmPasswordTxtFldActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="rConfirmPasswordLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Confirm Password:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="rImportMusicBtn">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Import"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="rRemoveMusicBtn">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Remove"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="rAddMusicLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Add Songs:"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane4">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JList" name="rGenreList">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="registerListModel" type="code"/>
+                    </Property>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JLabel" name="passwordDontMatch">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Passwords don&apos;t match"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="homePanel">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[600, 700]"/>
+              <Dimension value="[600, 730]"/>
             </Property>
           </Properties>
           <Constraints>
@@ -396,6 +503,11 @@
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="hLogoutBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -407,7 +519,9 @@
                       <Component id="postSection" max="32767" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="requestSection" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <Component id="hLogoutBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -434,7 +548,7 @@
                                   <Component id="infoLbl" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
                                   <Component id="sharedSongsLbl" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="113" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="friendsList" min="-2" pref="160" max="-2" attributes="0"/>
@@ -588,7 +702,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="postTxtFld" min="-2" pref="438" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                                  <Component id="postBtn" pref="59" max="32767" attributes="0"/>
+                                  <Component id="postBtn" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -810,6 +924,14 @@
                 </Component>
               </SubComponents>
             </Container>
+            <Component class="javax.swing.JButton" name="hLogoutBtn">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Logout"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hLogoutBtnActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
       </SubComponents>

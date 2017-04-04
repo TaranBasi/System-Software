@@ -5,12 +5,13 @@
  */
 package ss_crswrk;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.net.InetAddress;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ListModel;
 
 
 
@@ -31,8 +32,6 @@ public class window extends javax.swing.JFrame {
         registerListModel = new DefaultListModel<String>();
         friendsListModel = new DefaultListModel<String>();
         initComponents();
-      
-
     }
 
     /**
@@ -68,8 +67,18 @@ public class window extends javax.swing.JFrame {
         addBtn = new javax.swing.JButton();
         musicProfileLbl = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        rMusicList = new javax.swing.JList<>();
         deleteBtn = new javax.swing.JButton();
+        rPasswordTxtFld = new javax.swing.JTextField();
+        rPasswordLbl = new javax.swing.JLabel();
+        rConfirmPasswordTxtFld = new javax.swing.JTextField();
+        rConfirmPasswordLbl = new javax.swing.JLabel();
+        rImportMusicBtn = new javax.swing.JButton();
+        rRemoveMusicBtn = new javax.swing.JButton();
+        rAddMusicLbl = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        rGenreList = new javax.swing.JList<>();
+        passwordDontMatch = new javax.swing.JLabel();
         homePanel = new javax.swing.JPanel();
         friendSection = new javax.swing.JPanel();
         friendsLbl = new javax.swing.JLabel();
@@ -100,6 +109,7 @@ public class window extends javax.swing.JFrame {
         friendshipRequestListContents = new javax.swing.JList<>();
         acceptBtn = new javax.swing.JButton();
         refuseBtn = new javax.swing.JButton();
+        hLogoutBtn = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -115,7 +125,7 @@ public class window extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(645, 708));
+        setPreferredSize(new java.awt.Dimension(645, 750));
 
         parentPanel.setPreferredSize(new java.awt.Dimension(600, 700));
         parentPanel.setLayout(new java.awt.CardLayout());
@@ -171,7 +181,7 @@ public class window extends javax.swing.JFrame {
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(usernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(passwordTxtFld, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
 
         loginPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {goToRegisterBtn, loginBtn});
@@ -191,14 +201,14 @@ public class window extends javax.swing.JFrame {
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(goToRegisterBtn)
                     .addComponent(loginBtn))
-                .addContainerGap(376, Short.MAX_VALUE))
+                .addContainerGap(406, Short.MAX_VALUE))
         );
 
         parentPanel.add(loginPanel, "card3");
 
         registerPanel.setPreferredSize(new java.awt.Dimension(600, 700));
 
-        rUsernameLbl.setText("Username");
+        rUsernameLbl.setText("Username:");
 
         backToLoginBtn.setText("Back to Login");
         backToLoginBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -220,6 +230,12 @@ public class window extends javax.swing.JFrame {
 
         DoBLbl.setText("Date of Birth:");
 
+        PoBTxtFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PoBTxtFldActionPerformed(evt);
+            }
+        });
+
         musicDropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rap", "R'n'B", "Pop", "Folk", "Acoustic", "Opera", "Rock", " " }));
         musicDropdown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -236,8 +252,7 @@ public class window extends javax.swing.JFrame {
 
         musicProfileLbl.setText("Music Profile");
 
-        jList1.setModel(registerListModel);
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(rMusicList);
 
         deleteBtn.setText("Delete");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -246,39 +261,88 @@ public class window extends javax.swing.JFrame {
             }
         });
 
+        rPasswordTxtFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rPasswordTxtFldActionPerformed(evt);
+            }
+        });
+
+        rPasswordLbl.setText("Password:");
+
+        rConfirmPasswordTxtFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rConfirmPasswordTxtFldActionPerformed(evt);
+            }
+        });
+
+        rConfirmPasswordLbl.setText("Confirm Password:");
+
+        rImportMusicBtn.setText("Import");
+
+        rRemoveMusicBtn.setText("Remove");
+
+        rAddMusicLbl.setText("Add Songs:");
+
+        rGenreList.setModel(registerListModel);
+        jScrollPane4.setViewportView(rGenreList);
+
+        passwordDontMatch.setText("Passwords don't match");
+
         javax.swing.GroupLayout registerPanelLayout = new javax.swing.GroupLayout(registerPanel);
         registerPanel.setLayout(registerPanelLayout);
         registerPanelLayout.setHorizontalGroup(
             registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(registerPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(registerPanelLayout.createSequentialGroup()
-                        .addComponent(registerBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(orLbl)
-                        .addGap(18, 18, 18)
-                        .addComponent(backToLoginBtn))
-                    .addGroup(registerPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, registerPanelLayout.createSequentialGroup()
+                .addGap(9, 9, 9)
+                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, registerPanelLayout.createSequentialGroup()
                         .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(PoBLbl)
-                            .addComponent(rUsernameLbl)
-                            .addComponent(DoBLbl))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(registerPanelLayout.createSequentialGroup()
+                                .addComponent(registerBtn)
+                                .addGap(18, 18, 18)
+                                .addComponent(orLbl)
+                                .addGap(18, 18, 18)
+                                .addComponent(backToLoginBtn))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, registerPanelLayout.createSequentialGroup()
+                                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(rConfirmPasswordLbl)
+                                    .addComponent(rPasswordLbl)
+                                    .addComponent(PoBLbl)
+                                    .addComponent(DoBLbl)
+                                    .addComponent(rUsernameLbl))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(registerPanelLayout.createSequentialGroup()
+                                        .addComponent(passwordDontMatch)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(PoBTxtFld, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                    .addComponent(rUsernameTxtFld)
+                                    .addComponent(rPasswordTxtFld)
+                                    .addComponent(DoBTxtFld)
+                                    .addComponent(rConfirmPasswordTxtFld))))
+                        .addGap(41, 41, 41)
                         .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rUsernameTxtFld)
-                            .addComponent(PoBTxtFld)
-                            .addComponent(DoBTxtFld))))
-                .addGap(48, 48, 48)
-                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(registerPanelLayout.createSequentialGroup()
-                        .addComponent(addBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteBtn))
-                    .addComponent(musicProfileLbl)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                    .addComponent(musicDropdown, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(47, Short.MAX_VALUE))
+                            .addGroup(registerPanelLayout.createSequentialGroup()
+                                .addGap(7, 7, 7)
+                                .addComponent(musicProfileLbl))
+                            .addComponent(musicDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(registerPanelLayout.createSequentialGroup()
+                                    .addComponent(addBtn)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(deleteBtn))
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, registerPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(rRemoveMusicBtn)
+                            .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(registerPanelLayout.createSequentialGroup()
+                                    .addComponent(rAddMusicLbl)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(rImportMusicBtn))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(50, 50, 50))
         );
 
         registerPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backToLoginBtn, registerBtn});
@@ -291,39 +355,56 @@ public class window extends javax.swing.JFrame {
                 .addGap(105, 105, 105)
                 .addComponent(musicProfileLbl)
                 .addGap(18, 18, 18)
+                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(registerPanelLayout.createSequentialGroup()
+                        .addComponent(musicDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(registerPanelLayout.createSequentialGroup()
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rUsernameLbl)
+                            .addComponent(rUsernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8)
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rPasswordTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rPasswordLbl))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rConfirmPasswordTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rConfirmPasswordLbl))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(passwordDontMatch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(PoBTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PoBLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(DoBTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(DoBLbl))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rUsernameLbl)
-                    .addComponent(rUsernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(musicDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(registerPanelLayout.createSequentialGroup()
-                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(PoBLbl)
-                            .addComponent(PoBTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(DoBLbl)
-                            .addComponent(DoBTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(registerPanelLayout.createSequentialGroup()
-                        .addComponent(addBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 296, Short.MAX_VALUE)
-                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(backToLoginBtn)
-                            .addComponent(registerBtn)
-                            .addComponent(orLbl))
-                        .addGap(54, 54, 54))
-                    .addGroup(registerPanelLayout.createSequentialGroup()
-                        .addComponent(deleteBtn)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(deleteBtn)
+                    .addComponent(addBtn))
+                .addGap(43, 43, 43)
+                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rAddMusicLbl)
+                    .addComponent(rImportMusicBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rRemoveMusicBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(backToLoginBtn)
+                    .addComponent(registerBtn)
+                    .addComponent(orLbl))
+                .addGap(54, 54, 54))
         );
 
         parentPanel.add(registerPanel, "card2");
 
-        homePanel.setPreferredSize(new java.awt.Dimension(600, 700));
+        homePanel.setPreferredSize(new java.awt.Dimension(600, 730));
 
         friendSection.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -371,7 +452,7 @@ public class window extends javax.swing.JFrame {
                         .addComponent(infoLbl)
                         .addGap(120, 120, 120)
                         .addComponent(sharedSongsLbl)
-                        .addGap(0, 113, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(friendSectionLayout.createSequentialGroup()
                         .addComponent(friendsList, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -441,7 +522,7 @@ public class window extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(postTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)))
+                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         postSectionLayout.setVerticalGroup(
@@ -538,6 +619,13 @@ public class window extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        hLogoutBtn.setText("Logout");
+        hLogoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hLogoutBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout homePanelLayout = new javax.swing.GroupLayout(homePanel);
         homePanel.setLayout(homePanelLayout);
         homePanelLayout.setHorizontalGroup(
@@ -549,6 +637,10 @@ public class window extends javax.swing.JFrame {
                     .addComponent(friendSection, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(requestSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(hLogoutBtn)
+                .addGap(20, 20, 20))
         );
         homePanelLayout.setVerticalGroup(
             homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -559,7 +651,9 @@ public class window extends javax.swing.JFrame {
                 .addComponent(postSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(requestSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
+                .addGap(14, 14, 14)
+                .addComponent(hLogoutBtn)
+                .addContainerGap())
         );
 
         parentPanel.add(homePanel, "card4");
@@ -570,20 +664,14 @@ public class window extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void goToRegisterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToRegisterBtnActionPerformed
-        
         //Change screen from login to register
-        parentPanel.removeAll();
-        parentPanel.add(registerPanel);
-        parentPanel.repaint();
-        parentPanel.revalidate();
+        changeScreen(registerPanel);
+        passwordDontMatch.setVisible(false);
     }//GEN-LAST:event_goToRegisterBtnActionPerformed
 
     private void backToLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backToLoginBtnActionPerformed
         //Change screen from register to login
-        parentPanel.removeAll();
-        parentPanel.add(loginPanel);
-        parentPanel.repaint();
-        parentPanel.revalidate();
+        changeScreen(loginPanel);
     }//GEN-LAST:event_backToLoginBtnActionPerformed
 
     private void passwordTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTxtFldActionPerformed
@@ -614,10 +702,9 @@ public class window extends javax.swing.JFrame {
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         //take the user input (username and password) and compare it to the file to check if they exist
-        
-        System.out.println("Button clicked");
-        String usernameStr = usernameTxtFld.getText().toString();
-        String passwordStr = passwordTxtFld.getText().toString();
+        System.out.println("Login Button clicked");
+        String usernameStr = usernameTxtFld.getText();
+        String passwordStr = passwordTxtFld.getText();
         String packetStr = "login/" + usernameStr + "/" + passwordStr;
         
         System.out.println("Made packet");
@@ -625,10 +712,7 @@ public class window extends javax.swing.JFrame {
         setupClient(packetStr);
         
         //Change screen from login to home
-        parentPanel.removeAll();
-        parentPanel.add(homePanel);
-        parentPanel.repaint();
-        parentPanel.revalidate();
+        changeScreen(homePanel);
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void musicDropdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicDropdownActionPerformed
@@ -644,7 +728,76 @@ public class window extends javax.swing.JFrame {
     }//GEN-LAST:event_playBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-
+         
+        //Take user input and put it into a string
+        System.out.println("Register Button clicked");
+        String usernameStr = rUsernameTxtFld.getText();
+        String passwordStr = rPasswordTxtFld.getText();
+        String confirmPasswordStr = rConfirmPasswordTxtFld.getText();
+        String PoBstr = PoBTxtFld.getText();
+        String DoBstr = DoBTxtFld.getText();
+        
+        //Maybe put this in a struct?
+        
+        
+        
+        
+        //Getting the contents of the music genre list
+        ListModel model = rGenreList.getModel();
+        Object obj;
+        String listStr = "";
+        for (int i = 0; i < model.getSize(); i++){
+            obj =  model.getElementAt(i);
+            listStr+= "/" + obj.toString();
+            
+        }
+        
+        //Get the IP address of the server
+        String IPaddress = "";
+       try {
+           IPaddress = InetAddress.getLocalHost().toString();
+       } catch (Exception e) {}
+        
+        
+        //Getting the contents of the shared songs list         ***********not sure if they are strings or files*************
+        //Leave it for now I think!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //ListModel model2 = rGenreList.getModel();
+        //for (int i = 0; i < model2.getSize(); i++){
+          //  Object obj2 =  model2.getElementAt(i);
+        //}
+        
+        //Check if the passwords match
+        if (passwordStr.equals(confirmPasswordStr))
+        {
+            System.out.println("Passwords match");
+            
+            //make the packet with register at the front
+            String packetStr = "register/" + usernameStr + "/" + passwordStr + "/" + PoBstr + "/" + DoBstr + listStr + "/" + IPaddress;
+            System.out.println("Made packet");
+            
+            
+            
+            
+            //need to read fromm the file to check if the username already exists!!!!!!!!!!!!!!!!!!!!!!!!
+            
+            
+            
+            //send the packet to the server
+            setupClient(packetStr);
+            
+            //go back to login screen once finished
+            changeScreen(loginPanel);
+            
+        } else {
+            System.out.println("Passwords don't match");
+            rPasswordTxtFld.setText("");
+            rConfirmPasswordTxtFld.setText("");
+            
+            passwordDontMatch.setVisible(true);
+            
+        }       
+      
+        
     }//GEN-LAST:event_registerBtnActionPerformed
 
     private void setupClient(String packet) {
@@ -652,8 +805,34 @@ public class window extends javax.swing.JFrame {
             System.out.println("Setting up client");
             client newClient = new client(packet);
             newClient.main();
-        } catch (IOException ex) { }
+        } catch (Exception ex) { }
     }
+    
+    private void changeScreen(JPanel panel) {
+        parentPanel.removeAll();
+        parentPanel.add(panel);
+        parentPanel.repaint();
+        parentPanel.revalidate();
+    }
+    
+    private void rPasswordTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rPasswordTxtFldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rPasswordTxtFldActionPerformed
+
+    private void hLogoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hLogoutBtnActionPerformed
+        //Return back to login
+        changeScreen(loginPanel);
+    }//GEN-LAST:event_hLogoutBtnActionPerformed
+
+    private void PoBTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PoBTxtFldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PoBTxtFldActionPerformed
+
+    private void rConfirmPasswordTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rConfirmPasswordTxtFldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rConfirmPasswordTxtFldActionPerformed
+
+    
     
     
     /**
@@ -712,13 +891,14 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JScrollPane friendshipRequestList;
     private javax.swing.JList<String> friendshipRequestListContents;
     private javax.swing.JButton goToRegisterBtn;
+    private javax.swing.JButton hLogoutBtn;
     private javax.swing.JPanel homePanel;
     private javax.swing.JTextArea infoContents;
     private javax.swing.JLabel infoLbl;
     private javax.swing.JScrollPane infoTxtArea;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton loginBtn;
     private javax.swing.JPanel loginPanel;
@@ -726,6 +906,7 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JLabel musicProfileLbl;
     private javax.swing.JLabel orLbl;
     private javax.swing.JPanel parentPanel;
+    private javax.swing.JLabel passwordDontMatch;
     private javax.swing.JLabel passwordLbl;
     private javax.swing.JTextField passwordTxtFld;
     private javax.swing.JButton playBtn;
@@ -735,6 +916,15 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JTextArea postListContents;
     private javax.swing.JPanel postSection;
     private javax.swing.JTextField postTxtFld;
+    private javax.swing.JLabel rAddMusicLbl;
+    private javax.swing.JLabel rConfirmPasswordLbl;
+    private javax.swing.JTextField rConfirmPasswordTxtFld;
+    private javax.swing.JList<String> rGenreList;
+    private javax.swing.JButton rImportMusicBtn;
+    private javax.swing.JList<String> rMusicList;
+    private javax.swing.JLabel rPasswordLbl;
+    private javax.swing.JTextField rPasswordTxtFld;
+    private javax.swing.JButton rRemoveMusicBtn;
     private javax.swing.JLabel rUsernameLbl;
     private javax.swing.JTextField rUsernameTxtFld;
     private javax.swing.JButton refuseBtn;

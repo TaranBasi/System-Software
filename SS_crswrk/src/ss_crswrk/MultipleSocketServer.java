@@ -70,8 +70,8 @@ public class MultipleSocketServer implements Runnable{
                 if (process[0].equals("login"))
                 {
                     //run login function
-                    System.out.println("Running login function");
-                    
+                    System.out.println("Running login writing function");
+                    writeToCurrentLoginFile(str);
                 }
                 else if (process[0].equals("register"))
                 {
@@ -88,5 +88,21 @@ public class MultipleSocketServer implements Runnable{
     }
     
     
+    //Custom functions
+    
+    private void writeToCurrentLoginFile(String packet) {
+        String[] str = packet.split("/");
 
+        try {           
+            FileWriter fout = new FileWriter("currentLoginFile.txt",true);
+            PrintWriter pout =  new PrintWriter(fout, true);
+
+            String loginAndPassword = str[1] + "/" + str[2];
+
+            pout.println(loginAndPassword);
+
+            pout.close();
+            
+        } catch (IOException e) {}
+    }
 }
