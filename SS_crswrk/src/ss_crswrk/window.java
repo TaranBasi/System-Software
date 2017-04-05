@@ -7,11 +7,16 @@ package ss_crswrk;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
+import java.io.*;
+import java.util.Scanner;
 
 
 
@@ -776,10 +781,56 @@ public class window extends javax.swing.JFrame {
             System.out.println("Made packet");
             
             
+            try {           
+            FileWriter fout = new FileWriter("userFile.txt",true);    
+            //need a while loop here to check for userame already existing
+            //The place if statements for each scenario
+            //if (userName.equals)
+            boolean usernameExists = false;
+            
+            FileReader fin = new FileReader("userFile.txt");
+            BufferedReader din = new BufferedReader(fin);
+            
+            String line = null; //declare variable to store a line oftext
+            while ((line = din.readLine()) != null) {
+                String[] str = line.split("/");
+                if (usernameStr.equals(str[0])){
+                    usernameExists = true;
+                    System.out.println("username already exists");
+                }
+            }
+            din.close();
+// here we have read in a line of text
+// now parse line to extract data and print it out to the screen
+ // close file when we have finished
+            
+//            Scanner scanner = new Scanner("userFile.txt");
+//            while (scanner.hasNextLine()){
+//                String lineFromFile = scanner.nextLine();
+//                if(lineFromFile.contains(usernameStr)){
+//                    System.out.println("Username already exists");
+//                    userNameExists = true;
+//                }
+//                System.out.println("a: " + lineFromFile);
+//            }
+            if (!usernameExists){
+               
+            PrintWriter pout =  new PrintWriter(fout, true);
+            String userAndPassword = usernameStr + "/" + passwordStr;
+            pout.println(userAndPassword); 
+            pout.close();
+            }
             
             
+        } catch (IOException e) {}
             //need to read fromm the file to check if the username already exists!!!!!!!!!!!!!!!!!!!!!!!!
+            //if statement here saying if user name already exist then 'user already exists' 
+            //else 'user created' and input the data into a file
             
+            
+            
+            
+         //   if (usernameStr.equals)
             
             
             //send the packet to the server
