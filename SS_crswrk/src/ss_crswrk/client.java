@@ -15,6 +15,7 @@ import java.io.*;
 public class client {
     
     static private String packetStr;
+    static private String message;
     
     client (String str) {
         this.packetStr = str;
@@ -32,10 +33,21 @@ public class client {
             DataOutputStream outToServer = new DataOutputStream(server.getOutputStream());
         
             outToServer.writeUTF(packetStr);
+            
+            
+            //Recieve message from server
+            DataInputStream inFromServer = new DataInputStream(server.getInputStream());
+               
+            message = inFromServer.readUTF();
         
             server.close();
         }
         catch (IOException f) {}
         
+    }
+    
+    
+    public static String getMessage() {
+        return message;
     }
 }

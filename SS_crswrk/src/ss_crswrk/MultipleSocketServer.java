@@ -16,6 +16,7 @@ import java.util.*;
 public class MultipleSocketServer implements Runnable{
 
     private Socket csocket;
+    static private ArrayList<String> currentLoginList = new ArrayList<String>();
 
     
     MultipleSocketServer(Socket s) {
@@ -24,6 +25,7 @@ public class MultipleSocketServer implements Runnable{
     
     public static void main(String args[]) {
         int port = 19999;
+
             
             try {
                 ServerSocket socket1 = new ServerSocket(port);
@@ -63,20 +65,22 @@ public class MultipleSocketServer implements Runnable{
                 String[] process = str.split("/");
                 
                 //if statements to detemrine what to do with the packet
-                System.out.println(process[0]);
-                System.out.println(process[1]);
-                System.out.println(process[2]);
                 
                 if (process[0].equals("login"))
                 {
                     //run login function
                     System.out.println("Running login writing function");
-                    writeToCurrentLoginFile(str);
+                    checkLoginFile(str);
                 }
                 else if (process[0].equals("register"))
                 {
                     //run register function
                     System.out.println("Running register function");
+                    checkRegisterFile(str);
+                } 
+                else if (process[0].equals("logout")) {
+                    System.out.println("Logging out");
+                    logout(str);
                 }
                 
                 
@@ -89,20 +93,131 @@ public class MultipleSocketServer implements Runnable{
     
     
     //Custom functions
-    
-    private void writeToCurrentLoginFile(String packet) {
-        String[] str = packet.split("/");
-
-        try {           
-            FileWriter fout = new FileWriter("currentLoginFile.txt",true);
-            PrintWriter pout =  new PrintWriter(fout, true);
-
-            String loginAndPassword = str[1] + "/" + str[2];
-
-            pout.println(loginAndPassword);
-
-            pout.close();
+   
+    private void sendToClient(String packet) {
+        try {
+            DataOutputStream outToClient = new DataOutputStream(csocket.getOutputStream());
+        
+            outToClient.writeUTF(packet);
             
         } catch (IOException e) {}
+        
+    }
+    
+    private void checkLoginFile(String packet) {
+        String[] packetArray = packet.split("/");
+        boolean usernameExists = false;
+        boolean passwordsMatch = false;
+
+        try {        
+            
+            FileWriter fout = new FileWriter("userFile.txt",true);    //Creates file if it doesnt exist
+            fout.close();
+                
+
+
+            FileReader fin = new FileReader("userFile.txt");        //Opening file for reading
+            BufferedReader din = new BufferedReader(fin);
+
+            String line = null; //Declare variable to store a line of text
+            while ((line = din.readLine()) != null) {
+                String[] strArray = line.split("/");
+                if (packetArray[1].equals(strArray[0])){        //Checking each line in file to see if username exists
+                    usernameExists = true;
+                        
+                    if (packetArray[2].equals(strArray[1])) {  //If the username exists, then need to check if the passwords match
+                        passwordsMatch = true;
+                    }
+                }
+            }
+    
+            din.close();
+                    
+        } catch (IOException e) {}
+        
+        
+        if (usernameExists) {
+            if (passwordsMatch) {
+                //store login details in current login array? *****************
+                sendToClient("correctLogin");
+                
+                //Add user to the currentLoginList
+                currentLoginList.add(packetArray[1]);
+                System.out.println(currentLoginList);
+            } else {
+                //Username exists but password is incorrect
+                sendToClient("incorrectPassword");
+            }
+        } else {
+            //display unknown username error message
+            sendToClient("unknownUsername");
+            //Send unknown username message back to client
+        }
+    }
+    
+    private void checkRegisterFile(String packet) {
+        
+        String[] packetArray = packet.split("/");
+        boolean usernameExists = false;
+
+        try {           
+            FileWriter fout = new FileWriter("userFile.txt",true);    //Creates file if it doesnt exist
+            fout.close();
+
+            FileReader fin = new FileReader("userFile.txt");        //Opening file for reading
+            BufferedReader din = new BufferedReader(fin);
+
+            String line = null; //Declare variable to store a line of text
+            while ((line = din.readLine()) != null) {
+                String[] lineArray = line.split("/");
+                if (packetArray[1].equals(lineArray[0])){        //Checking each line in file to see if username exists
+                    usernameExists = true;
+                    System.out.println("username already exists");
+                }
+            }
+            din.close();
+            
+            
+        } catch (IOException e) {}
+        
+        if (!usernameExists) {
+            String lineToWrite = packet.replace("register/", "");
+            System.out.println(lineToWrite);
+            try {
+                FileWriter fout = new FileWriter("userFile.txt",true);  
+                PrintWriter pout =  new PrintWriter(fout, true);
+                pout.println(lineToWrite); 
+                pout.close();
+            } catch (IOException e) {}
+            
+            sendToClient("userCreated");
+        } else {
+            sendToClient("userAlreadyExists");
+        }
+    }
+    
+    private void logout(String packet) {
+        System.out.println("Looping through current users");
+        String[] packetArray = packet.split("/");
+        String compare;
+        for (int i = 0; i < currentLoginList.size(); i++) {
+            compare = currentLoginList.get(i);
+            if (packetArray[1].equals(compare)) {
+                currentLoginList.remove(i);
+                System.out.println("User removed");
+            }
+        }
+        
+        sendToClient("loggedOut");
     }
 }
+    
+    
+    
+    
+    
+    
+    
+
+
+
