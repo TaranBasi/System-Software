@@ -118,7 +118,7 @@ public class MultipleSocketServer implements Runnable{
 
             FileReader fin = new FileReader("userFile.txt");        //Opening file for reading
             BufferedReader din = new BufferedReader(fin);
-
+            
             String line = null; //Declare variable to store a line of text
             while ((line = din.readLine()) != null) {
                 String[] strArray = line.split("/");

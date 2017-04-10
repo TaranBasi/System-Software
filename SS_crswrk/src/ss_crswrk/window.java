@@ -16,8 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 import java.io.*;
-import java.util.Scanner;
-
 
 
 /**
@@ -30,6 +28,8 @@ public class window extends javax.swing.JFrame {
     DefaultListModel<String> registerListModel;
     DefaultListModel<String> friendsListModel;
     String currentUser;
+    //private ListModel<String> line;
+    DefaultListModel<String> connectedPeople;
     
     /**
      * Creates new form window
@@ -37,6 +37,7 @@ public class window extends javax.swing.JFrame {
     public window() {
         registerListModel = new DefaultListModel<String>();
         friendsListModel = new DefaultListModel<String>();
+        connectedPeople = new DefaultListModel<String>();
         initComponents();
         
         incorrectPasswordLbl.setVisible(false);
@@ -579,11 +580,7 @@ public class window extends javax.swing.JFrame {
 
         connectedPeopleListLbl.setText("List of Connected People");
 
-        connectedPeopleListContents.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        connectedPeopleListContents.setModel(connectedPeople);
         connectedPeopleList.setViewportView(connectedPeopleListContents);
 
         requestFriendshipBtn.setText("Request \nFriendship");
@@ -752,6 +749,26 @@ public class window extends javax.swing.JFrame {
         
         setupClient(packetStr);
         //recieveMessage();
+        
+        try {
+            FileReader fin = new FileReader("userFile.txt");        //Opening file for reading
+            BufferedReader din = new BufferedReader(fin);
+            
+            String line = null; //Declare variable to store a line of text
+            while ((line = din.readLine()) != null) {
+                String[] strArray = line.split("/");
+                if(!strArray[0].equals(currentUser))
+                {
+                    System.out.println(strArray[0]);
+                    connectedPeople.addElement(strArray[0]);
+                }
+            }
+    
+            din.close();
+                    
+        } catch (IOException e) {}
+        
+        
         
     }//GEN-LAST:event_loginBtnActionPerformed
 
