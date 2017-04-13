@@ -16,6 +16,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 import java.io.*;
+import java.nio.file.Files;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.util.Timer;
+import java.util.TimerTask;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import static java.nio.file.StandardCopyOption.*;
 
 
 /**
@@ -24,22 +32,29 @@ import java.io.*;
  */
 public class window extends javax.swing.JFrame {
 
-    
+
     DefaultListModel<String> registerListModel;
     DefaultListModel<String> friendsListModel;
+    DefaultListModel<String> connectedPeopleModel;
+    DefaultListModel<String> registerMusicListModel;
+    DefaultListModel<String> sharedSongsListModel;
     String currentUser;
-    //private ListModel<String> line;
-    DefaultListModel<String> connectedPeople;
-    
+    Timer timer = new Timer();
+    String musicString;
+
+
     /**
      * Creates new form window
      */
     public window() {
         registerListModel = new DefaultListModel<String>();
         friendsListModel = new DefaultListModel<String>();
-        connectedPeople = new DefaultListModel<String>();
-        initComponents();
+        connectedPeopleModel = new DefaultListModel<String>();
+        registerMusicListModel = new DefaultListModel<String>();
+        sharedSongsListModel = new DefaultListModel<String>();
         
+        initComponents();
+
         incorrectPasswordLbl.setVisible(false);
         usernameDoesntExistLbl.setVisible(false);
     }
@@ -86,7 +101,6 @@ public class window extends javax.swing.JFrame {
         rConfirmPasswordTxtFld = new javax.swing.JTextField();
         rConfirmPasswordLbl = new javax.swing.JLabel();
         rImportMusicBtn = new javax.swing.JButton();
-        rRemoveMusicBtn = new javax.swing.JButton();
         rAddMusicLbl = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         rGenreList = new javax.swing.JList<>();
@@ -139,7 +153,13 @@ public class window extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(640, 750));
+        setPreferredSize(new java.awt.Dimension(675, 745));
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         parentPanel.setPreferredSize(new java.awt.Dimension(600, 700));
         parentPanel.setLayout(new java.awt.CardLayout());
@@ -205,7 +225,7 @@ public class window extends javax.swing.JFrame {
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(usernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(passwordTxtFld, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addContainerGap(239, Short.MAX_VALUE))
         );
 
         loginPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {goToRegisterBtn, loginBtn});
@@ -280,6 +300,7 @@ public class window extends javax.swing.JFrame {
 
         musicProfileLbl.setText("Music Profile");
 
+        rMusicList.setModel(registerMusicListModel);
         jScrollPane2.setViewportView(rMusicList);
 
         deleteBtn.setText("Delete");
@@ -306,8 +327,11 @@ public class window extends javax.swing.JFrame {
         rConfirmPasswordLbl.setText("Confirm Password:");
 
         rImportMusicBtn.setText("Import");
-
-        rRemoveMusicBtn.setText("Remove");
+        rImportMusicBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rImportMusicBtnActionPerformed(evt);
+            }
+        });
 
         rAddMusicLbl.setText("Add Songs:");
 
@@ -340,7 +364,7 @@ public class window extends javax.swing.JFrame {
                                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(registerPanelLayout.createSequentialGroup()
                                         .addComponent(passwordDontMatchLbl)
-                                        .addGap(0, 0, Short.MAX_VALUE))
+                                        .addGap(0, 96, Short.MAX_VALUE))
                                     .addComponent(PoBTxtFld)
                                     .addComponent(rUsernameTxtFld)
                                     .addComponent(rPasswordTxtFld)
@@ -368,14 +392,12 @@ public class window extends javax.swing.JFrame {
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, registerPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(rRemoveMusicBtn)
-                            .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(registerPanelLayout.createSequentialGroup()
-                                    .addComponent(rAddMusicLbl)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rImportMusicBtn))
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(registerPanelLayout.createSequentialGroup()
+                                .addComponent(rAddMusicLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(rImportMusicBtn))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(50, 50, 50))
         );
 
@@ -408,7 +430,7 @@ public class window extends javax.swing.JFrame {
                             .addComponent(rConfirmPasswordLbl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(passwordDontMatchLbl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                         .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(PoBTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(PoBLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -426,9 +448,7 @@ public class window extends javax.swing.JFrame {
                     .addComponent(rImportMusicBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rRemoveMusicBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(backToLoginBtn)
                     .addComponent(registerBtn)
@@ -446,10 +466,11 @@ public class window extends javax.swing.JFrame {
 
         friendsLbl.setText("Friends");
 
-        friendsListContents.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Dan", "Taran", "Tom ", "Emil" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        friendsListContents.setModel(friendsListModel);
+        friendsListContents.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                friendsListContentsValueChanged(evt);
+            }
         });
         friendsList.setViewportView(friendsListContents);
 
@@ -461,10 +482,11 @@ public class window extends javax.swing.JFrame {
 
         sharedSongsLbl.setText("Shared Songs");
 
-        sharedSongsListContents.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Let it go (Frozen)", "Shape of you (Ed Sheeran)", "Shut up (Stromzy)" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        sharedSongsListContents.setModel(sharedSongsListModel);
+        sharedSongsListContents.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                sharedSongsListContentsValueChanged(evt);
+            }
         });
         sharedSongsList.setViewportView(sharedSongsListContents);
 
@@ -487,17 +509,16 @@ public class window extends javax.swing.JFrame {
                         .addGap(135, 135, 135)
                         .addComponent(infoLbl)
                         .addGap(120, 120, 120)
-                        .addComponent(sharedSongsLbl)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(sharedSongsLbl))
                     .addGroup(friendSectionLayout.createSequentialGroup()
                         .addComponent(friendsList, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(infoTxtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(playBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(sharedSongsList))))
-                .addContainerGap())
+                        .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(sharedSongsList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(playBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         friendSectionLayout.setVerticalGroup(
             friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -558,7 +579,7 @@ public class window extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(postTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         postSectionLayout.setVerticalGroup(
@@ -580,7 +601,7 @@ public class window extends javax.swing.JFrame {
 
         connectedPeopleListLbl.setText("List of Connected People");
 
-        connectedPeopleListContents.setModel(connectedPeople);
+        connectedPeopleListContents.setModel(connectedPeopleModel);
         connectedPeopleList.setViewportView(connectedPeopleListContents);
 
         requestFriendshipBtn.setText("Request \nFriendship");
@@ -674,7 +695,7 @@ public class window extends javax.swing.JFrame {
                     .addComponent(postSection, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(friendSection, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(requestSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         homePanelLayout.setVerticalGroup(
             homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -739,37 +760,14 @@ public class window extends javax.swing.JFrame {
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         //take the user input (username and password) and compare it to the file to check if they exist
-        System.out.println("Login Button clicked");
         String usernameStr = usernameTxtFld.getText();
         String passwordStr = passwordTxtFld.getText();
-        String packetStr = "login/" + usernameStr + "/" + passwordStr;
-        
-        System.out.println("Made packet");
-        
-        
+        String packetStr = "login~" + usernameStr + "~" + passwordStr;
+
+
         setupClient(packetStr);
-        //recieveMessage();
-        
-        try {
-            FileReader fin = new FileReader("userFile.txt");        //Opening file for reading
-            BufferedReader din = new BufferedReader(fin);
-            
-            String line = null; //Declare variable to store a line of text
-            while ((line = din.readLine()) != null) {
-                String[] strArray = line.split("/");
-                if(!strArray[0].equals(currentUser))
-                {
-                    System.out.println(strArray[0]);
-                    connectedPeople.addElement(strArray[0]);
-                }
-            }
-    
-            din.close();
-                    
-        } catch (IOException e) {}
-        
-        
-        
+
+
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void musicDropdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicDropdownActionPerformed
@@ -781,92 +779,68 @@ public class window extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void playBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playBtnActionPerformed
-        // TODO add your handling code here:
+        setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
     }//GEN-LAST:event_playBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-         
+
         //Take user input and put it into a string
-        System.out.println("Register Button clicked");
         String usernameStr = rUsernameTxtFld.getText();
         String passwordStr = rPasswordTxtFld.getText();
         String confirmPasswordStr = rConfirmPasswordTxtFld.getText();
         String PoBstr = PoBTxtFld.getText();
         String DoBstr = DoBTxtFld.getText();
-       
+
         //Getting the contents of the music genre list
         ListModel model = rGenreList.getModel();
         Object obj;
         String listStr = "";
-        for (int i = 0; i < model.getSize(); i++){
+        for (int i = 0; i < model.getSize() - 1; i++){
             obj =  model.getElementAt(i);
-            listStr+= "/" + obj.toString();
-            
+            listStr+= "~" + obj.toString();;
         }
-        
-        //Get the IP address of the server
-        String IPaddress = "";
-        try {
-            IPaddress = InetAddress.getLocalHost().toString();
-        } catch (Exception e) {}
-        
-        
-        //Getting the contents of the shared songs list         ***********not sure if they are strings or files*************
-        //Leave it for now I think!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //ListModel model2 = rGenreList.getModel();
-        //for (int i = 0; i < model2.getSize(); i++){
-          //  Object obj2 =  model2.getElementAt(i);
-        //}
-        
+       
         //Check if the passwords match
         if (passwordStr.equals(confirmPasswordStr)) //checking that the passwords match
         {
-            System.out.println("Passwords match");
-            
             //make the packet with register at the front
-            String packetStr = "register/" + usernameStr + "/" + passwordStr + "/" + PoBstr + "/" + DoBstr + listStr + "/" + IPaddress;
-            
-            
-            //SEND STRING HERE
+            String packetStr = "register~" + usernameStr + "~" + passwordStr + "~" + PoBstr + "~" + DoBstr + listStr + musicString;
             setupClient(packetStr);
-            //recieveMessage();
-            
+
         } else {
-            System.out.println("Passwords don't match");        //Displays error message and resets password fields
             rPasswordTxtFld.setText("");
             rConfirmPasswordTxtFld.setText("");
-            
-            passwordDontMatchLbl.setVisible(true);
-            
-        }       
-      
-        
+
+            passwordDontMatchLbl.setVisible(true); //Display error message
+
+        }
+
+
     }//GEN-LAST:event_registerBtnActionPerformed
 
     private void setupClient(String packet) {
         try {
-            System.out.println("Setting up client");
             client newClient = new client(packet);
             newClient.main();
         } catch (Exception ex) { }
-        
+
         recieveMessage();
     }
-    
+
     private void changeScreen(JPanel panel) {
         parentPanel.removeAll();
         parentPanel.add(panel);
         parentPanel.repaint();
         parentPanel.revalidate();
     }
-    
+
     private void rPasswordTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rPasswordTxtFldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rPasswordTxtFldActionPerformed
 
     private void hLogoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hLogoutBtnActionPerformed
         //Remove user from currently logged in list
-        setupClient("logout/" + currentUser);
+        setupClient("logout~" + currentUser);
     }//GEN-LAST:event_hLogoutBtnActionPerformed
 
     private void PoBTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PoBTxtFldActionPerformed
@@ -877,28 +851,77 @@ public class window extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_rConfirmPasswordTxtFldActionPerformed
 
+    private void friendsListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendsListContentsValueChanged
+        boolean x = evt.getValueIsAdjusting();
+        if (x) {
+            setupClient("friendsInfo~" + friendsListContents.getSelectedValue());
+
+        }
+    }//GEN-LAST:event_friendsListContentsValueChanged
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (homePanel.isVisible()) {
+            setupClient("logout~" + currentUser);
+        }
+    }//GEN-LAST:event_formWindowClosing
+
+    private void rImportMusicBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rImportMusicBtnActionPerformed
+        //Opens up the file chooser
+        JFileChooser chooser = new JFileChooser();
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("wav files", "wav");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showOpenDialog(homePanel);
+
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            
+            //setupClient("addMusic~" + selectedFile.toString());
+                       
+            //File target = new File(System.getProperty("user.dir")+"/music",selectedFile.getName());
+
+
+                //Files.copy(selectedFile.toPath(), target.toPath(), REPLACE_EXISTING);
+                
+                registerMusicListModel.addElement(selectedFile.getName());
+                
+                musicString += "~" + selectedFile;
+                
+
+            
+        }
+    }//GEN-LAST:event_rImportMusicBtnActionPerformed
+
+    private void sharedSongsListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_sharedSongsListContentsValueChanged
+        boolean x = evt.getValueIsAdjusting();
+        System.out.println("Clicking song");
+        String str = "playSong~" + sharedSongsListContents.getSelectedValue();
+        System.out.println(str);
+    }//GEN-LAST:event_sharedSongsListContentsValueChanged
+
     public void recieveMessage() {
         //Gets the message recieved from client
         String message = client.getMessage();
-        
-        System.out.println("Message: " + message);
-        
-        
-        //if statements to determine what the server did 
-        
+
+        String messageStr[] = message.split("~");
+
+        //if statements to determine what the server did
+
         //LOGIN
         if (message.equals("correctLogin")) {
             //Change screen from login to home
             changeScreen(homePanel);
             
+            startRefresh();
+            
             currentUser = usernameTxtFld.getText();
             currentUserLbl.setText("Current User: " + currentUser);
-            System.out.println("currentUser: " + currentUser);
-            
+
             //Remove error messages
             incorrectPasswordLbl.setVisible(false);
             usernameDoesntExistLbl.setVisible(false);
-            
+
         } else if (message.equals("unknownUsername")) {
             //Show error message
             usernameDoesntExistLbl.setVisible(true);
@@ -909,27 +932,109 @@ public class window extends javax.swing.JFrame {
             incorrectPasswordLbl.setVisible(true);
             //Remove other error message
             usernameDoesntExistLbl.setVisible(false);
-        } 
-        
-        //REGISTER 
+        }
+
+        //REGISTER
         else if (message.equals("userCreated")) {
             //Change screen back to the login screen
             changeScreen(loginPanel);
-            
+
             //Remove error messages
             usernameExistsLbl.setVisible(false);
         } else if (message.equals("userAlreadyExists")) {
             usernameExistsLbl.setVisible(true);
         }
-        
+
         //LOGOUT
         else if (message.equals("loggedOut")) {
             changeScreen(loginPanel);
+            connectedPeopleModel.removeAllElements();
+            friendsListModel.removeAllElements();
         }
+
+        //UPDATE HOME SCREEN
+        else if (messageStr[0].equals("connectedPeople")) {
+            updateConnectedPeople(message);
+        }
+        else if (messageStr[0].equals("friendsList")) {
+            loadFriendsList(message);
+        }
+        else if (messageStr[0].equals("friendsInfo")) {
+            updateFriendsInfo(message);
+        }
+        
+        //OTHER FUNCTIONS
+        else if (messageStr[0].equals("playingSong")) {
+            System.out.println("Playing song");
+        }
+    }
+
+    private void startRefresh() {
+        //Timer for recurring resfreshes of the screen (every 5 seconds)
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    connectedPeopleModel.removeAllElements();
+                    setupClient("connectedPeople");
+                    friendsListModel.removeAllElements();
+                    setupClient("friendsList~" + currentUser);
+
+                }
+            }, 0, 10000); //First is delay before first execution, second is delay between each subsequent executions (5 seconds)
             
     }
-    
-    
+
+    private void updateConnectedPeople(String str) {
+        
+        String strArray[] = str.split("~");
+
+        //So the current user isnt displayed
+        String current = currentUser + "*";
+
+        for (int i = 1; i < strArray.length; i++){
+            if(!strArray[i].equals(current))
+            {
+                connectedPeopleModel.addElement(strArray[i]);
+            }
+        }
+    }
+
+
+    private void loadFriendsList(String str) {
+
+        String strArray[] = str.split("~");
+
+        for (int i = 1; i < strArray.length; i++) {
+            if(!strArray[i].equals(currentUser))
+            {
+                friendsListModel.addElement(strArray[i]);
+            }
+        }
+    }
+
+
+    private void updateFriendsInfo(String str) {
+
+        infoContents.setText(null);
+        String strArray[] = str.split("~");
+        sharedSongsListModel.removeAllElements();
+
+        infoContents.append("Place of Birth: " + strArray[3] + "\n");
+        infoContents.append("Date of Birth: " + strArray[4] + "\n");
+        infoContents.append("Favourite Genres: ");
+        for (int i = 5; i < strArray.length; i++) {
+            if (!strArray[i].contains(".wav")) {              
+                infoContents.append(strArray[i] + "\n");
+            } else {
+                File file = new File(strArray[i]);
+                String songName = file.getName();
+                sharedSongsListModel.addElement(songName);
+            }
+        }     
+    }
+
+
+
     /**
      * @param args the command line arguments
      */
@@ -937,7 +1042,7 @@ public class window extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1021,7 +1126,6 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JList<String> rMusicList;
     private javax.swing.JLabel rPasswordLbl;
     private javax.swing.JTextField rPasswordTxtFld;
-    private javax.swing.JButton rRemoveMusicBtn;
     private javax.swing.JLabel rUsernameLbl;
     private javax.swing.JTextField rUsernameTxtFld;
     private javax.swing.JButton refuseBtn;
