@@ -745,7 +745,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="postTxtFld" min="-2" pref="438" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                                  <Component id="postBtn" pref="123" max="32767" attributes="0"/>
+                                  <Component id="postBtn" pref="135" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>

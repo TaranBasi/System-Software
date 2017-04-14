@@ -24,6 +24,9 @@ import java.util.TimerTask;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import static java.nio.file.StandardCopyOption.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.lang.String;
 
 
 /**
@@ -41,6 +44,7 @@ public class window extends javax.swing.JFrame {
     String currentUser;
     Timer timer = new Timer();
     String musicString;
+    String post;
 
 
     /**
@@ -579,7 +583,7 @@ public class window extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(postTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)))
+                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         postSectionLayout.setVerticalGroup(
@@ -748,10 +752,18 @@ public class window extends javax.swing.JFrame {
 
     private void postBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postBtnActionPerformed
         // TODO add your handling code here:
+        //get text
+        String post = postTxtFld.getText();
+        String updatePost = "postToFile~" + post;
+        //String packetStr = post;
+        setupClient(updatePost);
+        
     }//GEN-LAST:event_postBtnActionPerformed
 
     private void postTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postTxtFldActionPerformed
         // TODO add your handling code here:
+        //String post = postTxtFld.getText();
+        //whatever they write send to file... 
     }//GEN-LAST:event_postTxtFldActionPerformed
 
     private void requestFriendshipBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestFriendshipBtnActionPerformed
@@ -780,6 +792,12 @@ public class window extends javax.swing.JFrame {
 
     private void playBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playBtnActionPerformed
         setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
+        
+        //Play music here!...
+        String song = sharedSongsListContents.getSelectedValue();
+        Media hit = new Media(new File(song).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.play();
     }//GEN-LAST:event_playBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
@@ -967,6 +985,12 @@ public class window extends javax.swing.JFrame {
         else if (messageStr[0].equals("playingSong")) {
             System.out.println("Playing song");
         }
+        
+        else if (messageStr[0].equals("postUpdated")) {
+            System.out.println("New Post");
+            //Refresh feed function call here...
+        }
+        
     }
 
     private void startRefresh() {

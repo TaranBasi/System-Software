@@ -114,6 +114,12 @@ public class MultipleSocketServer implements Runnable{
                     playSong(process[1]);
                 }
                 
+                else if (process[0].equals("postToFile")) {
+                    System.out.println("Post to file");
+                    System.out.println(process[1]);
+                    postToFile(process[1]);
+                }
+                
                 
                 
                 
@@ -331,7 +337,7 @@ public class MultipleSocketServer implements Runnable{
                 try {
                     File file = new File(strArray[i]); //Create the file to copy
                     String name = file.getName(); 
-                    File target = new File(System.getProperty("user.dir")+"/music",name); //Create the file destination
+                    File target = new File(System.getProperty("user.dir/music")+ name); //Create the file destination
                     Path path = Paths.get(strArray[i]);     //Create a path for the file
                     
                     Files.copy(path, target.toPath(), REPLACE_EXISTING); //Copy the file
@@ -347,16 +353,37 @@ public class MultipleSocketServer implements Runnable{
 //        Media song = new Media(new File(songTitle).toURI().toString());
 //        MediaPlayer mediaPlayer = new MediaPlayer(song);
 //        mediaPlayer.play();
+
+
+        //Play music here!...
+//        String song = sharedSongsListContents.getSelectedValue();
+//        Media hit = new Media(new File(song).toURI().toString());
+//        MediaPlayer mediaPlayer = new MediaPlayer(hit);
+//        mediaPlayer.play();
         
         sendToClient("playingSong"); 
     }
+    
+    private void postToFile(String updatePost){
+        System.out.println(updatePost);
         
-     
-    
-    
-    
-    
-
-
-
+        //String[] updatePostArray = updatePost.split("~");
+        //String newPost = updatePost.replace("postToFile~", "");
+        System.out.println(updatePost);
+        
+        
+        try {
+            FileWriter fout = new FileWriter("posts.txt",true);    //Creates file if it doesnt exist
+            fout.close();
+            
+            
+            PrintWriter pout =  new PrintWriter(fout, true);
+            pout.println(updatePost);
+            pout.close();
+            fout.close();
+            
+        }
+        catch (IOException e) {}
+        sendToClient("postUpdated");
+    }
 }
