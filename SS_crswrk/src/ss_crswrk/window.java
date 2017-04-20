@@ -27,6 +27,12 @@ import static java.nio.file.StandardCopyOption.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.lang.String;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 
 /**
@@ -41,9 +47,10 @@ public class window extends javax.swing.JFrame {
     DefaultListModel<String> connectedPeopleModel;
     DefaultListModel<String> registerMusicListModel;
     DefaultListModel<String> sharedSongsListModel;
+    DefaultListModel<String> friendRequestsListModel;
     String currentUser;
     Timer timer = new Timer();
-    String musicString;
+    String musicString = "";
     String post;
 
 
@@ -56,11 +63,14 @@ public class window extends javax.swing.JFrame {
         connectedPeopleModel = new DefaultListModel<String>();
         registerMusicListModel = new DefaultListModel<String>();
         sharedSongsListModel = new DefaultListModel<String>();
+        friendRequestsListModel = new DefaultListModel<String>();
         
         initComponents();
 
         incorrectPasswordLbl.setVisible(false);
         usernameDoesntExistLbl.setVisible(false);
+        
+        this.setTitle("   SYSTEMS SOFTWARE");
     }
 
     /**
@@ -122,6 +132,7 @@ public class window extends javax.swing.JFrame {
         sharedSongsList = new javax.swing.JScrollPane();
         sharedSongsListContents = new javax.swing.JList<>();
         playBtn = new javax.swing.JButton();
+        stopBtn = new javax.swing.JButton();
         postSection = new javax.swing.JPanel();
         friendsPostLbl = new javax.swing.JLabel();
         postList = new javax.swing.JScrollPane();
@@ -157,7 +168,7 @@ public class window extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(675, 745));
+        setPreferredSize(new java.awt.Dimension(690, 745));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -229,7 +240,7 @@ public class window extends javax.swing.JFrame {
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(usernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(passwordTxtFld, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(239, Short.MAX_VALUE))
+                .addContainerGap(251, Short.MAX_VALUE))
         );
 
         loginPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {goToRegisterBtn, loginBtn});
@@ -340,6 +351,11 @@ public class window extends javax.swing.JFrame {
         rAddMusicLbl.setText("Add Songs:");
 
         rGenreList.setModel(registerListModel);
+        rGenreList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                rGenreListValueChanged(evt);
+            }
+        });
         jScrollPane4.setViewportView(rGenreList);
 
         passwordDontMatchLbl.setForeground(new java.awt.Color(255, 0, 0));
@@ -368,7 +384,7 @@ public class window extends javax.swing.JFrame {
                                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(registerPanelLayout.createSequentialGroup()
                                         .addComponent(passwordDontMatchLbl)
-                                        .addGap(0, 96, Short.MAX_VALUE))
+                                        .addGap(0, 108, Short.MAX_VALUE))
                                     .addComponent(PoBTxtFld)
                                     .addComponent(rUsernameTxtFld)
                                     .addComponent(rPasswordTxtFld)
@@ -501,6 +517,13 @@ public class window extends javax.swing.JFrame {
             }
         });
 
+        stopBtn.setText("Stop");
+        stopBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout friendSectionLayout = new javax.swing.GroupLayout(friendSection);
         friendSection.setLayout(friendSectionLayout);
         friendSectionLayout.setHorizontalGroup(
@@ -508,38 +531,42 @@ public class window extends javax.swing.JFrame {
             .addGroup(friendSectionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(friendsList, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(friendsLbl))
+                .addGap(18, 18, 18)
+                .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(friendSectionLayout.createSequentialGroup()
-                        .addComponent(friendsLbl)
-                        .addGap(135, 135, 135)
                         .addComponent(infoLbl)
-                        .addGap(120, 120, 120)
-                        .addComponent(sharedSongsLbl))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(infoTxtArea, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sharedSongsLbl)
+                    .addComponent(sharedSongsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(friendSectionLayout.createSequentialGroup()
-                        .addComponent(friendsList, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(playBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(infoTxtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(sharedSongsList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(playBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(stopBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         friendSectionLayout.setVerticalGroup(
             friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(friendSectionLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(friendsLbl)
                     .addComponent(infoLbl)
                     .addComponent(sharedSongsLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(friendsList, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoTxtArea)
-                    .addGroup(friendSectionLayout.createSequentialGroup()
+                .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, friendSectionLayout.createSequentialGroup()
                         .addComponent(sharedSongsList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(playBtn)))
+                        .addGroup(friendSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(playBtn)
+                            .addComponent(stopBtn)))
+                    .addComponent(friendsList, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                    .addComponent(infoTxtArea))
                 .addContainerGap())
         );
 
@@ -582,8 +609,8 @@ public class window extends javax.swing.JFrame {
                         .addComponent(postLbl)
                         .addGap(18, 18, 18)
                         .addComponent(postTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(postBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         postSectionLayout.setVerticalGroup(
@@ -592,11 +619,11 @@ public class window extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(friendsPostLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(postList, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(postList, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(postSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(postLbl)
                     .addComponent(postTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(postLbl)
                     .addComponent(postBtn))
                 .addContainerGap())
         );
@@ -606,6 +633,11 @@ public class window extends javax.swing.JFrame {
         connectedPeopleListLbl.setText("List of Connected People");
 
         connectedPeopleListContents.setModel(connectedPeopleModel);
+        connectedPeopleListContents.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                connectedPeopleListContentsValueChanged(evt);
+            }
+        });
         connectedPeopleList.setViewportView(connectedPeopleListContents);
 
         requestFriendshipBtn.setText("Request \nFriendship");
@@ -616,19 +648,35 @@ public class window extends javax.swing.JFrame {
         });
 
         chatBtn.setText("Chat");
+        chatBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chatBtnActionPerformed(evt);
+            }
+        });
 
         friendshipRequestLbl.setText("Friendship Request from");
 
-        friendshipRequestListContents.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        friendshipRequestListContents.setModel(friendRequestsListModel);
+        friendshipRequestListContents.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                friendshipRequestListContentsValueChanged(evt);
+            }
         });
         friendshipRequestList.setViewportView(friendshipRequestListContents);
 
         acceptBtn.setText("Accept");
+        acceptBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptBtnActionPerformed(evt);
+            }
+        });
 
         refuseBtn.setText("Refuse");
+        refuseBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refuseBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout requestSectionLayout = new javax.swing.GroupLayout(requestSection);
         requestSection.setLayout(requestSectionLayout);
@@ -705,11 +753,11 @@ public class window extends javax.swing.JFrame {
             homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(friendSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(friendSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(postSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(requestSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(requestSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(hLogoutBtn)
@@ -751,23 +799,25 @@ public class window extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void postBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postBtnActionPerformed
-        // TODO add your handling code here:
-        //get text
-        String post = postTxtFld.getText();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date date = new Date();
+        String postTime = dateFormat.format(date);
+        
+        String post = postTime + " - " + currentUser + ": " + postTxtFld.getText();
+        
         String updatePost = "postToFile~" + post;
-        //String packetStr = post;
         setupClient(updatePost);
         
     }//GEN-LAST:event_postBtnActionPerformed
 
     private void postTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postTxtFldActionPerformed
         // TODO add your handling code here:
-        //String post = postTxtFld.getText();
-        //whatever they write send to file... 
     }//GEN-LAST:event_postTxtFldActionPerformed
 
     private void requestFriendshipBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestFriendshipBtnActionPerformed
-        // TODO add your handling code here:
+   
+        String packet = "requestFriend~" + connectedPeopleListContents.getSelectedValue() + "~" + currentUser;
+        setupClient(packet);
     }//GEN-LAST:event_requestFriendshipBtnActionPerformed
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
@@ -787,17 +837,18 @@ public class window extends javax.swing.JFrame {
     }//GEN-LAST:event_musicDropdownActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        //Need to figure this out
+        
+        int index = rGenreList.getSelectedIndex();
+        registerListModel.remove(index);
+
+        
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void playBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playBtnActionPerformed
-        setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
         
-        //Play music here!...
-        String song = sharedSongsListContents.getSelectedValue();
-        Media hit = new Media(new File(song).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.play();
+        System.out.println("THIS IS THE SONG YOU CLICKED: " + sharedSongsListContents.getSelectedValue());
+        setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
+
     }//GEN-LAST:event_playBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
@@ -813,16 +864,17 @@ public class window extends javax.swing.JFrame {
         ListModel model = rGenreList.getModel();
         Object obj;
         String listStr = "";
-        for (int i = 0; i < model.getSize() - 1; i++){
+        for (int i = 0; i < model.getSize(); i++){
             obj =  model.getElementAt(i);
-            listStr+= "~" + obj.toString();;
+            listStr+= "~" + obj.toString();
         }
-       
+        System.out.println("listStr: " + listStr);
         //Check if the passwords match
         if (passwordStr.equals(confirmPasswordStr)) //checking that the passwords match
         {
             //make the packet with register at the front
             String packetStr = "register~" + usernameStr + "~" + passwordStr + "~" + PoBstr + "~" + DoBstr + listStr + musicString;
+            System.out.println(musicString);
             setupClient(packetStr);
 
         } else {
@@ -887,36 +939,76 @@ public class window extends javax.swing.JFrame {
         //Opens up the file chooser
         JFileChooser chooser = new JFileChooser();
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("wav files", "wav");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".wav, .mp3", "wav", "mp3");
         chooser.setFileFilter(filter);
 
         int returnVal = chooser.showOpenDialog(homePanel);
 
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             File selectedFile = chooser.getSelectedFile();
-            
-            //setupClient("addMusic~" + selectedFile.toString());
-                       
-            //File target = new File(System.getProperty("user.dir")+"/music",selectedFile.getName());
-
-
-                //Files.copy(selectedFile.toPath(), target.toPath(), REPLACE_EXISTING);
                 
-                registerMusicListModel.addElement(selectedFile.getName());
+            registerMusicListModel.addElement(selectedFile.getName());
                 
-                musicString += "~" + selectedFile;
+            musicString += "~" + selectedFile;
                 
-
-            
-        }
+            }
     }//GEN-LAST:event_rImportMusicBtnActionPerformed
 
     private void sharedSongsListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_sharedSongsListContentsValueChanged
         boolean x = evt.getValueIsAdjusting();
-        System.out.println("Clicking song");
-        String str = "playSong~" + sharedSongsListContents.getSelectedValue();
-        System.out.println(str);
+        if (x) {
+            System.out.println("Clicking song");
+        }
     }//GEN-LAST:event_sharedSongsListContentsValueChanged
+
+    private void connectedPeopleListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_connectedPeopleListContentsValueChanged
+        boolean x = evt.getValueIsAdjusting();
+        if (x) {
+            System.out.println("Clicking this friend: " + connectedPeopleListContents.getSelectedValue());
+        }
+    }//GEN-LAST:event_connectedPeopleListContentsValueChanged
+
+    private void friendshipRequestListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendshipRequestListContentsValueChanged
+        boolean x = evt.getValueIsAdjusting();
+        if (x) {
+            System.out.println("Clicking this friendship request: " + friendshipRequestListContents.getSelectedValue());
+        }
+    }//GEN-LAST:event_friendshipRequestListContentsValueChanged
+
+    private void rGenreListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_rGenreListValueChanged
+        boolean x = evt.getValueIsAdjusting();
+        if (x) {
+            System.out.println("Clicking this genre: " + rGenreList.getSelectedValue());
+        }
+    }//GEN-LAST:event_rGenreListValueChanged
+
+    private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
+        String packet = "acceptFriend~" + friendshipRequestListContents.getSelectedValue() + "~" + currentUser;
+        
+        int index = friendshipRequestListContents.getSelectedIndex();
+        friendRequestsListModel.remove(index);
+        
+        setupClient(packet);
+    }//GEN-LAST:event_acceptBtnActionPerformed
+
+    private void refuseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refuseBtnActionPerformed
+        String packet = "removeRequest~" + friendshipRequestListContents.getSelectedValue() + "~" + currentUser;
+        
+        int index = friendshipRequestListContents.getSelectedIndex();
+        friendRequestsListModel.remove(index);
+        
+        setupClient(packet);
+    }//GEN-LAST:event_refuseBtnActionPerformed
+
+    private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
+        setupClient("stopSong");
+    }//GEN-LAST:event_stopBtnActionPerformed
+
+    private void chatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatBtnActionPerformed
+        chatWindow chat = new chatWindow();
+        chat.setVisible(true);
+        chat.setDefaultCloseOperation(chatWindow.DISPOSE_ON_CLOSE);
+    }//GEN-LAST:event_chatBtnActionPerformed
 
     public void recieveMessage() {
         //Gets the message recieved from client
@@ -966,6 +1058,8 @@ public class window extends javax.swing.JFrame {
         //LOGOUT
         else if (message.equals("loggedOut")) {
             changeScreen(loginPanel);
+            timer.cancel();
+            //timer.purge();
             connectedPeopleModel.removeAllElements();
             friendsListModel.removeAllElements();
         }
@@ -980,31 +1074,57 @@ public class window extends javax.swing.JFrame {
         else if (messageStr[0].equals("friendsInfo")) {
             updateFriendsInfo(message);
         }
-        
+        else if (messageStr[0].equals("updateFeed")) {
+            updateFeed(message);
+        }
+         
         //OTHER FUNCTIONS
         else if (messageStr[0].equals("playingSong")) {
             System.out.println("Playing song");
         }
-        
+        else if (messageStr[0].equals("stoppingSong")) {
+            System.out.println("Stopping song");
+        }
         else if (messageStr[0].equals("postUpdated")) {
             System.out.println("New Post");
-            //Refresh feed function call here...
+            setupClient("updateFeed"); //Call function to update news feed once button is clicked and psot is written to file
         }
         
+        //FRIEND FUNCTIONS
+        else if (messageStr[0].equals("friendRequestSent")) {
+            System.out.println("Friendship request sent");
+            setupClient("updateFriendRequests~" + currentUser);
+        }
+        else if (messageStr[0].equals("updateFriendRequests")) {
+            System.out.println("Updating friend request list");
+            updateFriendRequests(message);
+        }
+        else if (messageStr[0].equals("requestRemoved")) {
+            System.out.println("Updating friend request list");
+            setupClient("updateFriendRequests~" + currentUser);
+        }
     }
 
     private void startRefresh() {
-        //Timer for recurring resfreshes of the screen (every 5 seconds)
+        //Timer for recurring resfreshes of the screen (every 3 seconds)
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    connectedPeopleModel.removeAllElements();
-                    setupClient("connectedPeople");
+                                       
                     friendsListModel.removeAllElements();
                     setupClient("friendsList~" + currentUser);
+                    
+                    connectedPeopleModel.removeAllElements();
+                    setupClient("connectedPeople");
+                    
+                    postListContents.setText(null);
+                    setupClient("updateFeed");
+                    
+                    friendRequestsListModel.removeAllElements();
+                    setupClient("updateFriendRequests~" + currentUser);
 
                 }
-            }, 0, 10000); //First is delay before first execution, second is delay between each subsequent executions (5 seconds)
+            }, 0, 3000); //First is delay before first execution, second is delay between each subsequent executions (3 seconds)
             
     }
 
@@ -1015,14 +1135,28 @@ public class window extends javax.swing.JFrame {
         //So the current user isnt displayed
         String current = currentUser + "*";
 
+        String friendStr = "";
+        for (int i = 0; i < friendsListModel.getSize(); i++) {
+            friendStr += "~" + friendsListModel.elementAt(i);
+        }
+        String element = "";
+
         for (int i = 1; i < strArray.length; i++){
             if(!strArray[i].equals(current))
             {
-                connectedPeopleModel.addElement(strArray[i]);
+                String friendStrArray[] = friendStr.split("~");
+                for (int j = 0; j < friendStrArray.length; j++) {
+                    if (friendStrArray[j].equals(strArray[i]) || (friendStrArray[j] + "*").equals(strArray[i])) {
+                        element = strArray[i] + " (friend)";
+                    } else {
+                        element = strArray[i];
+                    }
+                }
+                
+                connectedPeopleModel.addElement(element);
             }
         }
     }
-
 
     private void loadFriendsList(String str) {
 
@@ -1036,7 +1170,6 @@ public class window extends javax.swing.JFrame {
         }
     }
 
-
     private void updateFriendsInfo(String str) {
 
         infoContents.setText(null);
@@ -1047,7 +1180,7 @@ public class window extends javax.swing.JFrame {
         infoContents.append("Date of Birth: " + strArray[4] + "\n");
         infoContents.append("Favourite Genres: ");
         for (int i = 5; i < strArray.length; i++) {
-            if (!strArray[i].contains(".wav")) {              
+            if ((!strArray[i].contains(".wav")) && (!strArray[i].contains(".mp3"))) {              
                 infoContents.append(strArray[i] + "\n");
             } else {
                 File file = new File(strArray[i]);
@@ -1057,7 +1190,25 @@ public class window extends javax.swing.JFrame {
         }     
     }
 
-
+    private void updateFeed(String str) {
+        String strArray[] = str.split("~");
+        postListContents.setText(null);
+        
+        for (int i = 1; i < strArray.length; i++) {
+            postListContents.append(strArray[i] + "\n");
+        }
+    }
+    
+    private void updateFriendRequests(String str) {
+        
+        String[] strArray = str.split("~");
+        
+        for (int i = 1; i < strArray.length; i++) {
+            friendRequestsListModel.addElement(strArray[i]);
+        }
+        
+    }
+    
 
     /**
      * @param args the command line arguments
@@ -1160,6 +1311,7 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JLabel sharedSongsLbl;
     private javax.swing.JScrollPane sharedSongsList;
     private javax.swing.JList<String> sharedSongsListContents;
+    private javax.swing.JButton stopBtn;
     private javax.swing.JLabel usernameDoesntExistLbl;
     private javax.swing.JLabel usernameExistsLbl;
     private javax.swing.JLabel usernameLbl;

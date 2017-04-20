@@ -26,7 +26,16 @@ public class client {
         
         int port = 19999;
         
+        String strArray[] = packetStr.split("~");
+        
         try {
+            
+            
+            if (strArray[0].equals("chat")) {
+                port = 19998;
+            }
+            
+                    
             System.out.println("Sending packet");
             Socket server = new Socket(host, port);
         

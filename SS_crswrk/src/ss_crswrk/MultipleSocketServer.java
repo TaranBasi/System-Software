@@ -18,6 +18,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import sun.applet.Main;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 /**
  *
@@ -27,6 +29,7 @@ public class MultipleSocketServer implements Runnable{
 
     private Socket csocket;
     static private ArrayList<String> currentLoginList = new ArrayList<String>();
+    private static AudioStream audioStream;
 
     
     MultipleSocketServer(Socket s) {
@@ -35,7 +38,7 @@ public class MultipleSocketServer implements Runnable{
     
     public static void main(String args[]) {
         int port = 19999;
-
+        
             
             try {
                 ServerSocket socket1 = new ServerSocket(port);
@@ -72,52 +75,77 @@ public class MultipleSocketServer implements Runnable{
                 System.out.println("Recieved packet: " + str);
                 
                 //split string to get the process to do - login, register, etc.
-                String[] process = str.split("~");
+                String[] strArray = str.split("~");
                 
                 //if statements to detemrine what to do with the packet
                 
-                if (process[0].equals("login"))
+                if (strArray[0].equals("login"))
                 {
                     //run login function
                     System.out.println("Running login writing function");
                     checkLoginFile(str);
                 }
-                else if (process[0].equals("register"))
+                else if (strArray[0].equals("register"))
                 {
                     //run register function
                     System.out.println("Running register function");
                     checkRegisterFile(str);
                 } 
-                else if (process[0].equals("logout")) {
+                else if (strArray[0].equals("logout")) {
                     System.out.println("Logging out");
                     logout(str);
                 }
                 
                 //Home Screen Updates
-                else if (process[0].equals("connectedPeople")) {
+                else if (strArray[0].equals("connectedPeople")) {
                     System.out.println("Updating connected people");
                     updateConnectedPeople();
                 }
-                else if (process[0].equals("friendsList")) {
+                else if (strArray[0].equals("friendsList")) {
                     System.out.println("Loading friends list");
-                    loadFriendsList(process[1]);
+                    loadFriendsList(strArray[1]);
                 }
-                else if (process[0].equals("friendsInfo")) {
+                else if (strArray[0].equals("friendsInfo")) {
                     System.out.println("Loading friends info");
-                    updateFriendsInfo(process[1]);
+                    updateFriendsInfo(strArray[1]);
                 }
                 
                 //Other functions
-                else if (process[0].equals("playSong")) {
+                else if (strArray[0].equals("playSong")) {
                     System.out.println("Play song function");
-                    System.out.println(process[1]);
-                    playSong(process[1]);
+                    System.out.println(strArray[1]);
+                    playSong(strArray[1]);
+                }          
+                else if (strArray[0].equals("stopSong")) {
+                    System.out.println("Stop song function");
+                    stopSong();
+                }   
+                else if (strArray[0].equals("postToFile")) {
+                    System.out.println("Post to file");
+                    System.out.println(strArray[1]);
+                    postToFile(strArray[1]);
+                }
+                else if (strArray[0].equals("updateFeed")) {
+                    System.out.println("Updating feed");
+                    updateFeed();
                 }
                 
-                else if (process[0].equals("postToFile")) {
-                    System.out.println("Post to file");
-                    System.out.println(process[1]);
-                    postToFile(process[1]);
+                //FRIEND FUNCTIONS
+                else if (strArray[0].equals("requestFriend")) {
+                    System.out.println("Adding to friendship request list");
+                    requestFriend(str);
+                }
+                else if (strArray[0].equals("updateFriendRequests")) {
+                    System.out.println("Updating friend request list");
+                    updateFriendRequests(strArray[1]);
+                }
+                else if (strArray[0].equals("acceptFriend")) {
+                    System.out.println("Accepting friend");
+                    acceptFriend(str);
+                }
+                else if (strArray[0].equals("removeRequest")) {
+                    System.out.println("Removing request");
+                    removeRequest(str);
                 }
                 
                 
@@ -220,12 +248,30 @@ public class MultipleSocketServer implements Runnable{
             String lineToWrite = packet.replace("register~", "");
 
             try {
+                //Write info to the userFile
                 FileWriter fout = new FileWriter("userFile.txt",true);  
                 PrintWriter pout =  new PrintWriter(fout, true);
                 pout.println(lineToWrite); 
                 pout.close();
+                fout.close();
                
                 copyMusic(packet);
+                
+                //Add name to the friend requests file
+                FileWriter requestFout = new FileWriter("friendRequests.txt", true);
+                PrintWriter requestPout =  new PrintWriter(requestFout, true);
+                requestPout.println(packetArray[1] + ":"); 
+                requestPout.close();
+                requestFout.close();
+                
+                //Add name to the friend requests file
+                FileWriter friendFout = new FileWriter("friends.txt", true);
+                PrintWriter friendPout =  new PrintWriter(friendFout, true);
+                friendPout.println(packetArray[1] + ":"); 
+                friendPout.close();
+                friendFout.close();
+                
+                
             } catch (IOException e) {}
             
             sendToClient("userCreated");
@@ -269,7 +315,6 @@ public class MultipleSocketServer implements Runnable{
                         peopleStr += "*";
                     }
                 }
-
                 
             }
     
@@ -284,14 +329,29 @@ public class MultipleSocketServer implements Runnable{
     
     private void loadFriendsList(String user) {
         String friendsStr = "friendsList";
+        
         try {
-            FileReader fin = new FileReader("userFile.txt");        //Opening file for reading
+            
+            FileReader fin = new FileReader("friends.txt");        //Opening file for reading
             BufferedReader din = new BufferedReader(fin);
             
             String line = null; //Declare variable to store a line of text
             while ((line = din.readLine()) != null) {
-                String[] strArray = line.split("~");
-                friendsStr += "~" + strArray[0];        
+               
+                String[] strArray = line.split(":");
+                
+                if (strArray[0].equals(user)) {
+                    System.out.println("user is: " + user);
+                    
+                    if (strArray.length > 1) {
+                        String[] friendArray = strArray[1].split("~");
+                        for (int i = 0; i < friendArray.length; i++) {
+                            friendsStr += "~" + friendArray[i];
+                        }
+                    }
+                }
+                
+                System.out.println("Friends are: " + friendsStr);
             }
     
             din.close();
@@ -300,7 +360,6 @@ public class MultipleSocketServer implements Runnable{
         
         sendToClient(friendsStr);
     }
-    
     
     private void updateFriendsInfo(String user) {
         String infoStr = "friendsInfo~";
@@ -325,6 +384,24 @@ public class MultipleSocketServer implements Runnable{
         sendToClient(infoStr);
     }
     
+    private void updateFeed() {
+        String posts = "updateFeed";
+        try {
+            FileReader fin = new FileReader("posts.txt");        //Opening file for reading
+            BufferedReader din = new BufferedReader(fin);
+           
+            String line = null;
+            while ((line = din.readLine()) != null) {
+                posts += "~" + line; 
+            }
+    
+            din.close();
+                    
+        } catch (IOException e) {}
+        
+        sendToClient(posts);
+    }
+    
     
     //Other functions
     
@@ -332,12 +409,15 @@ public class MultipleSocketServer implements Runnable{
         String strArray[] = str.split("~");
         
         for (int i = 0; i < strArray.length; i++) {
-            if (strArray[i].contains(".wav")) {
+            if (strArray[i].contains(".wav") || strArray[i].contains(".mp3")) {
                 
                 try {
                     File file = new File(strArray[i]); //Create the file to copy
                     String name = file.getName(); 
-                    File target = new File(System.getProperty("user.dir/music")+ name); //Create the file destination
+                    System.out.println("name of file: " + name);
+                    File target = new File(System.getProperty("user.dir")+"/music",name);
+                    
+                    System.out.println(target.toString());
                     Path path = Paths.get(strArray[i]);     //Create a path for the file
                     
                     Files.copy(path, target.toPath(), REPLACE_EXISTING); //Copy the file
@@ -347,25 +427,43 @@ public class MultipleSocketServer implements Runnable{
     }
     
     private void playSong(String str) {
-        String songTitle = str + ".wav";
-        System.out.println("Playing song: " + songTitle);
         
-//        Media song = new Media(new File(songTitle).toURI().toString());
-//        MediaPlayer mediaPlayer = new MediaPlayer(song);
-//        mediaPlayer.play();
-
-
-        //Play music here!...
-//        String song = sharedSongsListContents.getSelectedValue();
-//        Media hit = new Media(new File(song).toURI().toString());
-//        MediaPlayer mediaPlayer = new MediaPlayer(hit);
-//        mediaPlayer.play();
+        System.out.println(str);
         
+            try {
+                
+
+                File file = new File(System.getProperty("user.dir")+"/music", str);
+
+                System.out.println("file: " + file.toString());
+                InputStream in = new FileInputStream(file);
+
+                audioStream = new AudioStream(in);
+
+                AudioPlayer.player.start(audioStream);
+
+                System.out.println("Audio Stream: " + audioStream);
+                
+                
+
+            } catch (Exception e) {}
+        
+
         sendToClient("playingSong"); 
     }
     
+    private void stopSong() {
+        
+        try {
+
+            AudioPlayer.player.stop(audioStream);    
+            
+        } catch (Exception e) {}
+                
+        sendToClient("stoppingSong");  
+    }
+    
     private void postToFile(String updatePost){
-        System.out.println(updatePost);
         
         //String[] updatePostArray = updatePost.split("~");
         //String newPost = updatePost.replace("postToFile~", "");
@@ -373,17 +471,205 @@ public class MultipleSocketServer implements Runnable{
         
         
         try {
-            FileWriter fout = new FileWriter("posts.txt",true);    //Creates file if it doesnt exist
-            fout.close();
-            
-            
+
+            FileWriter fout = new FileWriter("posts.txt",true);  
             PrintWriter pout =  new PrintWriter(fout, true);
-            pout.println(updatePost);
+            pout.println(updatePost); 
             pout.close();
             fout.close();
-            
         }
         catch (IOException e) {}
         sendToClient("postUpdated");
     }
+    
+    
+    //Friend functions
+    
+    private void requestFriend(String str) {
+        String strArray[] = str.split("~");
+
+        
+        //strArray[2] is the current user
+        
+        try {
+            
+            FileWriter fout = new FileWriter("friendRequests.txt",true);    //Creates file if it doesnt exist
+            fout.close();
+            
+            BufferedReader file = new BufferedReader(new FileReader("friendRequests.txt"));
+            String line;
+            String inputStr = "";
+
+            while ((line = file.readLine()) != null) {
+                String lineArray[] = line.split(":"); //Get the first name in the line
+                if (lineArray[0].equals(strArray[1])) {
+                    line += "~" + strArray[2];
+                }
+                inputStr += line + "\n";
+                
+            }
+            
+            
+            String[] inputStrArray = inputStr.split("\n");
+
+            FileWriter writer = new FileWriter("friendRequests.txt",false);
+            PrintWriter pout =  new PrintWriter(writer, true);
+            
+            
+            for (int i = 0; i < inputStrArray.length; i++) {
+                pout.println(inputStrArray[i]);
+            }
+
+            pout.close();
+            
+        } catch (IOException e) {}
+        
+        
+        sendToClient("friendRequestSent");
+    }
+    
+    private void updateFriendRequests(String str) {
+        String requestStr = "updateFriendRequests";
+
+        try {
+            
+            FileReader fin = new FileReader("friendRequests.txt");        //Opening file for reading
+            BufferedReader din = new BufferedReader(fin);
+            
+            String line = null; //Declare variable to store a line of text
+            while ((line = din.readLine()) != null) {
+
+                String[] strArray = line.split(":");    //Split the line to find the user
+
+                if (str.equals(strArray[0])) {    //Finding the users name        
+                    if (strArray.length > 1) { //Ensure the user actually has friendship requests
+                        String[] lineArray = strArray[1].split("~");    //Split the rest of the line to find all the users friends requests
+
+                        for (int i = 1; i < lineArray.length; i++) {
+                            requestStr += "~" + lineArray[i];
+                        }
+                    }
+                }
+            }
+           
+                    
+        } catch (IOException e) {}
+
+        
+        sendToClient(requestStr);
+    }
+    
+    private void acceptFriend(String str) {
+        
+        //strArray[2] is the current user
+        
+        String[] strArray = str.split("~");
+        
+            try {
+            
+            FileWriter fout = new FileWriter("friends.txt",true);    //Creates file if it doesnt exist
+            fout.close();
+            
+            BufferedReader file = new BufferedReader(new FileReader("friends.txt"));
+            String line;
+            String inputStr = "";
+
+            while ((line = file.readLine()) != null) {
+                String lineArray[] = line.split(":"); //Get the first name in the line
+                if (lineArray[0].equals(strArray[2])) {
+                    line += "~" + strArray[1];
+                }
+                if (lineArray[0].equals(strArray[1])) {
+                    line += "~" + strArray[2];
+                }
+                inputStr += line + "\n";
+
+            }
+            
+            String[] inputStrArray = inputStr.split("\n");
+
+            FileWriter writer = new FileWriter("friends.txt",false);
+            PrintWriter pout =  new PrintWriter(writer, true);
+            
+            
+            for (int i = 0; i < inputStrArray.length; i++) {
+                pout.println(inputStrArray[i]);
+            }
+
+            pout.close(); 
+            
+            
+            } catch (IOException e) {}
+            
+            
+            //Removes the friend request from the file
+            removeRequest(str);
+            
+    }
+    
+    private void removeRequest(String str) {
+        //Delete the friend request from the file
+        
+        String strArray[] = str.split("~");
+            
+        try {
+        
+            FileWriter requestFout = new FileWriter("friendRequests.txt",true);    //Creates file if it doesnt exist
+            requestFout.close();
+            
+            BufferedReader requestFile = new BufferedReader(new FileReader("friendRequests.txt"));
+
+            String requestInputStr = "";
+            String line;
+
+            while ((line = requestFile.readLine()) != null) {
+                String lineArray[] = line.split(":"); //Get the first name in the line
+
+                
+                
+                if (lineArray[0].equals(strArray[2])) {
+                    if (lineArray.length > 1) {
+                        String requestArray[] = lineArray[1].split("~");
+                        for (int i = 1; i < requestArray.length; i++) {
+                            line = lineArray[0] + ":";
+
+                            if ((!requestArray[i].equals(strArray[1])) && (!requestArray[i].equals(""))) {   
+                                System.out.println("requestArray[i]: " + requestArray[i]);
+                                System.out.println("strArray[1]: " + strArray[1]);
+                                line += "~" + requestArray[i];
+
+                                System.out.println("LINE: " + line);
+                            }
+                        }
+                    
+                    }
+                     
+                    
+                }
+
+                requestInputStr += line + "\n";
+
+            }
+            
+            String[] requestInputStrArray = requestInputStr.split("\n");
+
+            FileWriter requestWriter = new FileWriter("friendRequests.txt",false);
+            PrintWriter requestPout =  new PrintWriter(requestWriter, true);
+            
+            
+            for (int i = 0; i < requestInputStrArray.length; i++) {
+                requestPout.println(requestInputStrArray[i]);
+            }
+
+            requestPout.close();
+            
+            System.out.println("ITEM REMOVED");
+            
+        } catch (IOException e) {}
+        
+        sendToClient("RequestRemoved");
+            
+    }
+    
+    
 }
