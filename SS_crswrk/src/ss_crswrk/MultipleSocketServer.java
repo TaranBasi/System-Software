@@ -20,6 +20,8 @@ import javax.sound.sampled.Clip;
 import sun.applet.Main;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.*;
 
 /**
  *
@@ -30,6 +32,7 @@ public class MultipleSocketServer implements Runnable{
     private Socket csocket;
     static private ArrayList<String> currentLoginList = new ArrayList<String>();
     private static AudioStream audioStream;
+    private static Player player;
 
     
     MultipleSocketServer(Socket s) {
@@ -197,6 +200,7 @@ public class MultipleSocketServer implements Runnable{
             }
     
             din.close();
+            fin.close();
                     
         } catch (IOException e) {}
         
@@ -240,6 +244,7 @@ public class MultipleSocketServer implements Runnable{
                 }
             }
             din.close();
+            fin.close();
             
             
         } catch (IOException e) {}
@@ -320,6 +325,7 @@ public class MultipleSocketServer implements Runnable{
     
             
             din.close();
+            fin.close();
                     
         } catch (IOException e) {}
         
@@ -355,6 +361,7 @@ public class MultipleSocketServer implements Runnable{
             }
     
             din.close();
+            fin.close();
                     
         } catch (IOException e) {}
         
@@ -378,6 +385,7 @@ public class MultipleSocketServer implements Runnable{
             }
     
             din.close();
+            fin.close();
                     
         } catch (IOException e) {}
         
@@ -396,6 +404,7 @@ public class MultipleSocketServer implements Runnable{
             }
     
             din.close();
+            fin.close();
                     
         } catch (IOException e) {}
         
@@ -432,17 +441,26 @@ public class MultipleSocketServer implements Runnable{
         
             try {
                 
-
                 File file = new File(System.getProperty("user.dir")+"/music", str);
 
+                
+                
                 System.out.println("file: " + file.toString());
                 InputStream in = new FileInputStream(file);
+                
+                BufferedInputStream bis = new BufferedInputStream(in);
+                
+               
+                player = new Player(bis);
+                
+                player.play();
+                
 
-                audioStream = new AudioStream(in);
+                //audioStream = new AudioStream(in);
 
-                AudioPlayer.player.start(audioStream);
+                //AudioPlayer.player.start(audioStream);
 
-                System.out.println("Audio Stream: " + audioStream);
+                System.out.println("Song playing");
                 
                 
 
@@ -455,8 +473,9 @@ public class MultipleSocketServer implements Runnable{
     private void stopSong() {
         
         try {
-
-            AudioPlayer.player.stop(audioStream);    
+            
+            player.close();
+            //AudioPlayer.player.stop(audioStream);    
             
         } catch (Exception e) {}
                 
@@ -521,6 +540,8 @@ public class MultipleSocketServer implements Runnable{
             }
 
             pout.close();
+            writer.close();
+            file.close();
             
         } catch (IOException e) {}
         
@@ -552,7 +573,9 @@ public class MultipleSocketServer implements Runnable{
                 }
             }
            
-                    
+            din.close();
+            fin.close();
+            
         } catch (IOException e) {}
 
         
@@ -597,7 +620,8 @@ public class MultipleSocketServer implements Runnable{
             }
 
             pout.close(); 
-            
+            writer.close();
+            file.close();
             
             } catch (IOException e) {}
             
@@ -662,8 +686,9 @@ public class MultipleSocketServer implements Runnable{
             }
 
             requestPout.close();
-            
-            System.out.println("ITEM REMOVED");
+            requestWriter.close();
+            requestFile.close();
+
             
         } catch (IOException e) {}
         

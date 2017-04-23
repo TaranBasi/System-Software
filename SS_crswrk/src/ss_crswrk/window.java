@@ -31,6 +31,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -48,7 +50,7 @@ public class window extends javax.swing.JFrame {
     DefaultListModel<String> registerMusicListModel;
     DefaultListModel<String> sharedSongsListModel;
     DefaultListModel<String> friendRequestsListModel;
-    String currentUser;
+    static String currentUser;
     Timer timer = new Timer();
     String musicString = "";
     String post;
@@ -496,6 +498,7 @@ public class window extends javax.swing.JFrame {
 
         infoLbl.setText("Information");
 
+        infoContents.setEditable(false);
         infoContents.setColumns(20);
         infoContents.setRows(5);
         infoTxtArea.setViewportView(infoContents);
@@ -574,6 +577,7 @@ public class window extends javax.swing.JFrame {
 
         friendsPostLbl.setText("Friends Posts");
 
+        postListContents.setEditable(false);
         postListContents.setColumns(20);
         postListContents.setRows(5);
         postList.setViewportView(postListContents);
@@ -846,9 +850,14 @@ public class window extends javax.swing.JFrame {
 
     private void playBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playBtnActionPerformed
         
-        System.out.println("THIS IS THE SONG YOU CLICKED: " + sharedSongsListContents.getSelectedValue());
-        setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
-
+        ExecutorService service = Executors.newFixedThreadPool(4);
+        service.submit(new Runnable() {
+            public void run() {
+                System.out.println("THIS IS THE SONG YOU CLICKED: " + sharedSongsListContents.getSelectedValue());
+                setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
+            }
+        });
+        
     }//GEN-LAST:event_playBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
@@ -1005,7 +1014,10 @@ public class window extends javax.swing.JFrame {
     }//GEN-LAST:event_stopBtnActionPerformed
 
     private void chatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatBtnActionPerformed
-        chatWindow chat = new chatWindow();
+        String str = currentUser + "~" + connectedPeopleListContents.getSelectedValue();
+        System.out.println("FRIEND: " + connectedPeopleListContents.getSelectedValue());
+        
+        chatWindow chat = new chatWindow(str);
         chat.setVisible(true);
         chat.setDefaultCloseOperation(chatWindow.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_chatBtnActionPerformed
@@ -1208,6 +1220,7 @@ public class window extends javax.swing.JFrame {
         }
         
     }
+   
     
 
     /**

@@ -32,24 +32,51 @@ public class client {
             
             
             if (strArray[0].equals("chat")) {
+                
                 port = 19998;
-            }
+                
+                System.out.println("Received chat");
+                
+                
+                Socket cServer = new Socket(host, port);
+                
+                DataInputStream din = new DataInputStream(cServer.getInputStream());
+                
+                DataOutputStream dos = new DataOutputStream(cServer.getOutputStream());
+                
+                String line = null;
+                
+                
+                    
+                
+                
+                    dos.writeUTF(packetStr);
+                    dos.flush();
+
+
+                    message = din.readUTF(); 
+                    System.out.println("Message:" + message);
+                   
+                
+                
+            } else {
             
                     
-            System.out.println("Sending packet");
-            Socket server = new Socket(host, port);
-        
-            DataOutputStream outToServer = new DataOutputStream(server.getOutputStream());
-        
-            outToServer.writeUTF(packetStr);
+                Socket server = new Socket(host, port);
+
+                DataOutputStream outToServer = new DataOutputStream(server.getOutputStream());
+
+                outToServer.writeUTF(packetStr);
+
+
+                //Recieve message from server
+                DataInputStream inFromServer = new DataInputStream(server.getInputStream());
+
+                message = inFromServer.readUTF();
+
+                server.close();
             
-            
-            //Recieve message from server
-            DataInputStream inFromServer = new DataInputStream(server.getInputStream());
-               
-            message = inFromServer.readUTF();
-        
-            server.close();
+            }
         }
         catch (IOException f) {}
         

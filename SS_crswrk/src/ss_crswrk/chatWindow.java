@@ -11,11 +11,34 @@ package ss_crswrk;
  */
 public class chatWindow extends javax.swing.JFrame {
 
+    static private String friend;
+    static private String user;
+    
+    
     /**
      * Creates new form chatWindow
      */
-    public chatWindow() {
+    public chatWindow(String str) {
         initComponents();
+        
+        System.out.println("str: " + str);
+        
+        String strArray[] = str.split("~");
+        
+        this.user = strArray[0];
+        this.friend = strArray[1];
+        
+        chatNameLbl.setText("Chatting with: " + strArray[1]);
+        
+        
+        
+        //System.out.println("paramStr: " + paramStr);
+        
+        
+    }
+
+    private chatWindow() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -27,11 +50,14 @@ public class chatWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
         chatNameLbl = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         messagesTxtArea = new javax.swing.JTextArea();
         sendMessageBtn = new javax.swing.JButton();
         composeMessageTxtFld = new javax.swing.JTextField();
+
+        jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -42,11 +68,17 @@ public class chatWindow extends javax.swing.JFrame {
 
         chatNameLbl.setText("jLabel1");
 
+        messagesTxtArea.setEditable(false);
         messagesTxtArea.setColumns(20);
         messagesTxtArea.setRows(5);
         jScrollPane1.setViewportView(messagesTxtArea);
 
         sendMessageBtn.setText("Send");
+        sendMessageBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendMessageBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -86,7 +118,37 @@ public class chatWindow extends javax.swing.JFrame {
         System.out.println("closing");
     }//GEN-LAST:event_formWindowClosing
 
-    
+    private void sendMessageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMessageBtnActionPerformed
+        
+        String message = composeMessageTxtFld.getText();
+        
+        
+        try {
+            client newClient = new client("chat~" + user + "~" + friend + "~" + message);
+            newClient.main();
+        } catch (Exception ex) { }
+        
+        
+        recieveMessage();
+        
+        
+        
+    }//GEN-LAST:event_sendMessageBtnActionPerformed
+
+    private void recieveMessage() {
+        
+        String message = client.getMessage();
+                
+        System.out.println("We just recieved this message: " + message);
+        
+        String strArray[] = message.split("~");
+        
+        
+        
+        messagesTxtArea.append(strArray[1] + ": " + strArray[2] + "\n");
+        
+        
+    }
     
   
     
@@ -129,6 +191,7 @@ public class chatWindow extends javax.swing.JFrame {
     private javax.swing.JLabel chatNameLbl;
     private javax.swing.JTextField composeMessageTxtFld;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextArea messagesTxtArea;
     private javax.swing.JButton sendMessageBtn;
     // End of variables declaration//GEN-END:variables

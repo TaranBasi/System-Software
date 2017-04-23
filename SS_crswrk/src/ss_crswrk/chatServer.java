@@ -5,14 +5,19 @@
  */
 package ss_crswrk;
 
+import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
  * @author Daniel
  */
 public class chatServer {
+    
+    static ArrayList<DataOutputStream> clients = new ArrayList<DataOutputStream>();
+    static ArrayList<Socket> clientsSockets = new ArrayList<Socket>();
     
     
     chatServer() {
@@ -22,24 +27,31 @@ public class chatServer {
     
     public static void main(String args[]) {
         
-    int port = 19998;
-
-               
+        int port = 19998;
+        
         try {
-            ServerSocket socket1 = new ServerSocket(port);
-            System.out.println("Socket connected");
+            ServerSocket ss = new ServerSocket(port);
             
-            while (true){
-                Socket socket = socket1.accept();
-                 
-                Runnable runnable = new MultipleSocketServer(socket);
-                Thread thread = new Thread(runnable);
-                thread.start();
-                    
-                System.out.println("thread started");
-            } 
-        }
-        catch (Exception e) { }
+            while (true) {
+                
+                Socket socket = ss.accept();
+                
+                clientsSockets.add(socket);
+                
+                DataOutputStream os = new DataOutputStream(socket.getOutputStream());
+                clients.add(os);
+                
+                
+                                                
+                ServerHandler sHandler = new ServerHandler(socket, clientsSockets);
+                
+                Thread t = new Thread(sHandler);
+                t.start();
+    
+                
+            }
+            
+        }  catch (Exception e) {}
         
     }
 }
