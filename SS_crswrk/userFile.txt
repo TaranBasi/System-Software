@@ -1,3 +1,2 @@
-a~s~asd~123~Rap~C:\Users\Daniel\Downloads\Ed Sheeran - Galway Girl.mp3
-q~w~qwe~1234~Rap
-z~x~zxcv~12345~Rap
+Daniel~Jones~Bedford~04/07/1997~Rap~Folk~C:\Users\Daniel\Downloads\Ed Sheeran - Galway Girl.mp3~C:\Users\Daniel\Downloads\Cristiano Ronaldo-48.png
+Taran~Basi~Leamington~1.1.1~Rap~C:\Users\Daniel\Downloads\Ed Sheeran - Galway Girl.mp3~C:\Users\Daniel\Downloads\Ronaldo-48.png

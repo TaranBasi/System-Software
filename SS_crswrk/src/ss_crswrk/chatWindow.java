@@ -5,6 +5,13 @@
  */
 package ss_crswrk;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import ss_crswrk.client.chatClient;
+import static ss_crswrk.window.currentUser;
+
 /**
  *
  * @author Daniel
@@ -13,12 +20,14 @@ public class chatWindow extends javax.swing.JFrame {
 
     static private String friend;
     static private String user;
+    static private chatClient cc;
+    
     
     
     /**
      * Creates new form chatWindow
      */
-    public chatWindow(String str) {
+    public chatWindow(String str) throws InterruptedException {
         initComponents();
         
         System.out.println("str: " + str);
@@ -26,14 +35,30 @@ public class chatWindow extends javax.swing.JFrame {
         String strArray[] = str.split("~");
         
         this.user = strArray[0];
-        this.friend = strArray[1];
         
-        chatNameLbl.setText("Chatting with: " + strArray[1]);
+        //Removing any * or (friend) from usernames
+        String friendStr = strArray[1];
+        
+        friendStr = strArray[1].replaceAll("\\*", ""); 
+        
+        if (friendStr.indexOf("(") != -1) {
+            friendStr = friendStr.substring(0, (strArray[1].indexOf("(") - 2));
+        }
         
         
+
         
-        //System.out.println("paramStr: " + paramStr);
+        this.friend = friendStr;
         
+        chatNameLbl.setText("Chatting with: " + friend);
+        
+        establishConnection();
+        
+        listenForMessage();
+        
+        Thread.sleep(10);
+         
+        cc.sendMessage("add~" + user);
         
     }
 
@@ -120,38 +145,63 @@ public class chatWindow extends javax.swing.JFrame {
 
     private void sendMessageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMessageBtnActionPerformed
         
-        String message = composeMessageTxtFld.getText();
+        String message = composeMessageTxtFld.getText();       
+        
+        messagesTxtArea.append(user + ": " + message + "\n");
         
         
-        try {
-            client newClient = new client("chat~" + user + "~" + friend + "~" + message);
-            newClient.main();
-        } catch (Exception ex) { }
-        
-        
-        recieveMessage();
-        
-        
-        
+        cc.sendMessage(user + "~" + friend + "~" + message);
+
     }//GEN-LAST:event_sendMessageBtnActionPerformed
 
-    private void recieveMessage() {
         
-        String message = client.getMessage();
+    private void establishConnection() {
                 
-        System.out.println("We just recieved this message: " + message);
-        
-        String strArray[] = message.split("~");
-        
-        
-        
-        messagesTxtArea.append(strArray[1] + ": " + strArray[2] + "\n");
-        
+        try {
+            client newClient = new client("chat");
+            newClient.main();
+            
+            
+            cc = newClient.getChatClient();
+            
+            System.out.println("adding");
+            
+            
+        } catch (Exception ex) { }
         
     }
     
-  
+        
     
+    private void listenForMessage() {
+        
+        java.util.Timer chatTimer = new Timer();
+        
+        chatTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                                       
+                    String str = cc.cl.chatMessage;
+                    
+                    String strArray[] = str.split("~");
+                                        
+
+                    if (!str.equals("")) {
+                        if (strArray[0].equals(friend)) {
+                            messagesTxtArea.append(friend + ": " + strArray[1] + "\n");
+                            cc.cl.chatMessage = "";
+                        }
+                    }
+                    
+                }
+            }, 1000, 1000); //First is delay before first execution, second is delay between each subsequent executions (3 seconds)
+            
+        
+        
+    }
+
+    
+      
     /**
      * @param args the command line arguments
      */

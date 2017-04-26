@@ -27,12 +27,19 @@ import static java.nio.file.StandardCopyOption.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.lang.String;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import ss_crswrk.ServerHandler.user;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -51,15 +58,16 @@ public class window extends javax.swing.JFrame {
     DefaultListModel<String> sharedSongsListModel;
     DefaultListModel<String> friendRequestsListModel;
     static String currentUser;
-    Timer timer = new Timer();
+    java.util.Timer timer;
     String musicString = "";
+    String imageString = "";
     String post;
 
 
     /**
      * Creates new form window
      */
-    public window() {
+    public window() throws InterruptedException {
         registerListModel = new DefaultListModel<String>();
         friendsListModel = new DefaultListModel<String>();
         connectedPeopleModel = new DefaultListModel<String>();
@@ -71,8 +79,11 @@ public class window extends javax.swing.JFrame {
 
         incorrectPasswordLbl.setVisible(false);
         usernameDoesntExistLbl.setVisible(false);
+        fillAllFieldsLbl.setVisible(false);
         
         this.setTitle("   SYSTEMS SOFTWARE");
+        
+        
     }
 
     /**
@@ -122,6 +133,9 @@ public class window extends javax.swing.JFrame {
         rGenreList = new javax.swing.JList<>();
         passwordDontMatchLbl = new javax.swing.JLabel();
         usernameExistsLbl = new javax.swing.JLabel();
+        fillAllFieldsLbl = new javax.swing.JLabel();
+        uploadPicBtn = new javax.swing.JButton();
+        registerPicLbl = new javax.swing.JLabel();
         homePanel = new javax.swing.JPanel();
         friendSection = new javax.swing.JPanel();
         friendsLbl = new javax.swing.JLabel();
@@ -155,6 +169,8 @@ public class window extends javax.swing.JFrame {
         refuseBtn = new javax.swing.JButton();
         hLogoutBtn = new javax.swing.JButton();
         currentUserLbl = new javax.swing.JLabel();
+        imageLbl = new javax.swing.JLabel();
+        friendImageLbl = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -170,7 +186,7 @@ public class window extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(690, 745));
+        setPreferredSize(new java.awt.Dimension(690, 775));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -366,6 +382,16 @@ public class window extends javax.swing.JFrame {
         usernameExistsLbl.setForeground(new java.awt.Color(255, 0, 0));
         usernameExistsLbl.setText("Username already exists.");
 
+        fillAllFieldsLbl.setForeground(new java.awt.Color(255, 0, 0));
+        fillAllFieldsLbl.setText("Please fill out all the fields");
+
+        uploadPicBtn.setText("Upload Picture");
+        uploadPicBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadPicBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout registerPanelLayout = new javax.swing.GroupLayout(registerPanel);
         registerPanel.setLayout(registerPanelLayout);
         registerPanelLayout.setHorizontalGroup(
@@ -375,6 +401,21 @@ public class window extends javax.swing.JFrame {
                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, registerPanelLayout.createSequentialGroup()
                         .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(usernameExistsLbl)
+                                .addGroup(registerPanelLayout.createSequentialGroup()
+                                    .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(registerBtn)
+                                        .addGroup(registerPanelLayout.createSequentialGroup()
+                                            .addComponent(registerPicLbl)
+                                            .addGap(115, 115, 115)))
+                                    .addGap(18, 18, 18)
+                                    .addComponent(orLbl)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(backToLoginBtn))
+                                .addGroup(registerPanelLayout.createSequentialGroup()
+                                    .addGap(8, 8, 8)
+                                    .addComponent(uploadPicBtn)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, registerPanelLayout.createSequentialGroup()
                                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(rConfirmPasswordLbl)
@@ -384,22 +425,16 @@ public class window extends javax.swing.JFrame {
                                     .addComponent(rUsernameLbl))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(registerPanelLayout.createSequentialGroup()
-                                        .addComponent(passwordDontMatchLbl)
-                                        .addGap(0, 108, Short.MAX_VALUE))
                                     .addComponent(PoBTxtFld)
                                     .addComponent(rUsernameTxtFld)
                                     .addComponent(rPasswordTxtFld)
                                     .addComponent(DoBTxtFld)
-                                    .addComponent(rConfirmPasswordTxtFld)))
-                            .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(usernameExistsLbl)
-                                .addGroup(registerPanelLayout.createSequentialGroup()
-                                    .addComponent(registerBtn)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(orLbl)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(backToLoginBtn))))
+                                    .addComponent(rConfirmPasswordTxtFld)
+                                    .addGroup(registerPanelLayout.createSequentialGroup()
+                                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(fillAllFieldsLbl)
+                                            .addComponent(passwordDontMatchLbl))
+                                        .addGap(0, 91, Short.MAX_VALUE)))))
                         .addGap(41, 41, 41)
                         .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(registerPanelLayout.createSequentialGroup()
@@ -460,16 +495,26 @@ public class window extends javax.swing.JFrame {
                         .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(DoBTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(DoBLbl))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteBtn)
-                    .addComponent(addBtn))
-                .addGap(43, 43, 43)
+                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(registerPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(deleteBtn)
+                            .addComponent(addBtn)))
+                    .addGroup(registerPanelLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(fillAllFieldsLbl)))
+                .addGap(37, 37, 37)
                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rAddMusicLbl)
                     .addComponent(rImportMusicBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(registerPanelLayout.createSequentialGroup()
+                        .addComponent(registerPicLbl)
+                        .addGap(61, 61, 61)
+                        .addComponent(uploadPicBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                 .addGroup(registerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(backToLoginBtn)
@@ -746,6 +791,10 @@ public class window extends javax.swing.JFrame {
                 .addGroup(homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(homePanelLayout.createSequentialGroup()
                         .addComponent(currentUserLbl)
+                        .addGap(99, 99, 99)
+                        .addComponent(imageLbl)
+                        .addGap(158, 158, 158)
+                        .addComponent(friendImageLbl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(hLogoutBtn))
                     .addComponent(postSection, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -765,7 +814,9 @@ public class window extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(hLogoutBtn)
-                    .addComponent(currentUserLbl))
+                    .addComponent(currentUserLbl)
+                    .addComponent(imageLbl)
+                    .addComponent(friendImageLbl))
                 .addGap(14, 14, 14))
         );
 
@@ -830,8 +881,13 @@ public class window extends javax.swing.JFrame {
         String passwordStr = passwordTxtFld.getText();
         String packetStr = "login~" + usernameStr + "~" + passwordStr;
 
+        if (!usernameStr.equals("")) {
+            if (!passwordStr.equals("")) {
+                setupClient(packetStr);
+            }
+        }
 
-        setupClient(packetStr);
+        
 
 
     }//GEN-LAST:event_loginBtnActionPerformed
@@ -868,6 +924,11 @@ public class window extends javax.swing.JFrame {
         String confirmPasswordStr = rConfirmPasswordTxtFld.getText();
         String PoBstr = PoBTxtFld.getText();
         String DoBstr = DoBTxtFld.getText();
+        
+        if(usernameStr.equals("") || passwordStr.equals("") || PoBstr.equals("") || DoBstr.equals("")) {
+            fillAllFieldsLbl.setVisible(true);
+            return;
+        }
 
         //Getting the contents of the music genre list
         ListModel model = rGenreList.getModel();
@@ -882,9 +943,11 @@ public class window extends javax.swing.JFrame {
         if (passwordStr.equals(confirmPasswordStr)) //checking that the passwords match
         {
             //make the packet with register at the front
-            String packetStr = "register~" + usernameStr + "~" + passwordStr + "~" + PoBstr + "~" + DoBstr + listStr + musicString;
-            System.out.println(musicString);
+            String packetStr = "register~" + usernameStr + "~" + passwordStr + "~" + PoBstr + "~" + DoBstr + listStr + musicString + imageString;
+
             setupClient(packetStr);
+            fillAllFieldsLbl.setVisible(false);
+
 
         } else {
             rPasswordTxtFld.setText("");
@@ -1015,12 +1078,40 @@ public class window extends javax.swing.JFrame {
 
     private void chatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatBtnActionPerformed
         String str = currentUser + "~" + connectedPeopleListContents.getSelectedValue();
-        System.out.println("FRIEND: " + connectedPeopleListContents.getSelectedValue());
         
-        chatWindow chat = new chatWindow(str);
-        chat.setVisible(true);
-        chat.setDefaultCloseOperation(chatWindow.DISPOSE_ON_CLOSE);
+        chatWindow chat;
+        try {
+            if (connectedPeopleListContents.getSelectedValue() != null) {
+                chat = new chatWindow(str);
+                chat.setVisible(true);
+                chat.setDefaultCloseOperation(chatWindow.DISPOSE_ON_CLOSE);
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_chatBtnActionPerformed
+
+    private void uploadPicBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPicBtnActionPerformed
+        JFileChooser chooser = new JFileChooser();
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".png", "png");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showOpenDialog(homePanel);
+
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+                
+            ImageIcon icon = new ImageIcon(selectedFile.toString());
+            
+            registerPicLbl.setIcon(icon);
+            
+            imageString += "~" + selectedFile;
+            
+                
+        }
+    }//GEN-LAST:event_uploadPicBtnActionPerformed
 
     public void recieveMessage() {
         //Gets the message recieved from client
@@ -1031,15 +1122,30 @@ public class window extends javax.swing.JFrame {
         //if statements to determine what the server did
 
         //LOGIN
-        if (message.equals("correctLogin")) {
+        if (messageStr[0].equals("correctLogin")) {
             //Change screen from login to home
             changeScreen(homePanel);
             
             startRefresh();
-            
+           
             currentUser = usernameTxtFld.getText();
             currentUserLbl.setText("Current User: " + currentUser);
+                       
+            if (!messageStr[1].equals("")) {
+                Path currentRelativePath = Paths.get("");
+                String workingDirectory = currentRelativePath.toAbsolutePath().toString();
 
+                File file = new File(messageStr[1]);
+                String imageName = file.getName();
+
+                ImageIcon icon = new ImageIcon(workingDirectory+"\\icons\\"+imageName);
+
+                if (workingDirectory != "") {
+                    imageLbl.setIcon(icon);
+                    imageLbl.setText(" " + currentUser);
+                }
+            }
+            
             //Remove error messages
             incorrectPasswordLbl.setVisible(false);
             usernameDoesntExistLbl.setVisible(false);
@@ -1071,7 +1177,7 @@ public class window extends javax.swing.JFrame {
         else if (message.equals("loggedOut")) {
             changeScreen(loginPanel);
             timer.cancel();
-            //timer.purge();
+            timer.purge();
             connectedPeopleModel.removeAllElements();
             friendsListModel.removeAllElements();
         }
@@ -1098,34 +1204,31 @@ public class window extends javax.swing.JFrame {
             System.out.println("Stopping song");
         }
         else if (messageStr[0].equals("postUpdated")) {
-            System.out.println("New Post");
             setupClient("updateFeed"); //Call function to update news feed once button is clicked and psot is written to file
         }
         
         //FRIEND FUNCTIONS
         else if (messageStr[0].equals("friendRequestSent")) {
-            System.out.println("Friendship request sent");
             setupClient("updateFriendRequests~" + currentUser);
         }
         else if (messageStr[0].equals("updateFriendRequests")) {
-            System.out.println("Updating friend request list");
             updateFriendRequests(message);
         }
         else if (messageStr[0].equals("requestRemoved")) {
-            System.out.println("Updating friend request list");
             setupClient("updateFriendRequests~" + currentUser);
         }
     }
 
     private void startRefresh() {
         //Timer for recurring resfreshes of the screen (every 3 seconds)
+        timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                                       
+
                     friendsListModel.removeAllElements();
                     setupClient("friendsList~" + currentUser);
-                    
+                                        
                     connectedPeopleModel.removeAllElements();
                     setupClient("connectedPeople");
                     
@@ -1182,7 +1285,7 @@ public class window extends javax.swing.JFrame {
         }
     }
 
-    private void updateFriendsInfo(String str) {
+    private void updateFriendsInfo(String str)  {
 
         infoContents.setText(null);
         String strArray[] = str.split("~");
@@ -1192,12 +1295,29 @@ public class window extends javax.swing.JFrame {
         infoContents.append("Date of Birth: " + strArray[4] + "\n");
         infoContents.append("Favourite Genres: ");
         for (int i = 5; i < strArray.length; i++) {
-            if ((!strArray[i].contains(".wav")) && (!strArray[i].contains(".mp3"))) {              
-                infoContents.append(strArray[i] + "\n");
-            } else {
+            if ((strArray[i].contains(".wav")) || (strArray[i].contains(".mp3"))) {
+                
                 File file = new File(strArray[i]);
                 String songName = file.getName();
                 sharedSongsListModel.addElement(songName);
+                
+            } else if (strArray[i].contains(".png")) {
+                File file = new File(strArray[i]);
+                String imageName = file.getName();
+                
+                Path currentRelativePath = Paths.get("");
+                String workingDirectory = currentRelativePath.toAbsolutePath().toString();
+                ImageIcon icon = new ImageIcon(workingDirectory+"\\icons\\"+imageName);
+
+                System.out.println("Path: " + icon);
+
+                if (workingDirectory != "") {
+                    friendImageLbl.setIcon(icon);
+                    friendImageLbl.setText(" " + strArray[1]);
+                }
+
+            } else {
+                infoContents.append(strArray[i] + "\n");
             }
         }     
     }
@@ -1205,9 +1325,25 @@ public class window extends javax.swing.JFrame {
     private void updateFeed(String str) {
         String strArray[] = str.split("~");
         postListContents.setText(null);
+
+        
         
         for (int i = 1; i < strArray.length; i++) {
-            postListContents.append(strArray[i] + "\n");
+            String lineArray[] = strArray[i].split("- ");
+            String secondLineArray[] = lineArray[1].split(":");
+            System.out.println("POST: " + secondLineArray[0]);
+            System.out.println("NAME: " + currentUser);
+            // || 
+            if (secondLineArray[0].equals(currentUser)) {
+                postListContents.append(strArray[i] + "\n");
+            }
+            for (int j = 0; j < friendsListModel.size(); j++) {
+                if (friendsListModel.elementAt(j).equals(secondLineArray[0])) {
+                    postListContents.append(strArray[i] + "\n");
+                   
+                }
+            }
+
         }
     }
     
@@ -1253,7 +1389,12 @@ public class window extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new window().setVisible(true);            }
+                try {
+                    new window().setVisible(true);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
+                }
+ }
         });
     }
 
@@ -1271,6 +1412,8 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JLabel connectedPeopleListLbl;
     private javax.swing.JLabel currentUserLbl;
     private javax.swing.JButton deleteBtn;
+    private javax.swing.JLabel fillAllFieldsLbl;
+    private javax.swing.JLabel friendImageLbl;
     private javax.swing.JPanel friendSection;
     private javax.swing.JLabel friendsLbl;
     private javax.swing.JScrollPane friendsList;
@@ -1282,6 +1425,7 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JButton goToRegisterBtn;
     private javax.swing.JButton hLogoutBtn;
     private javax.swing.JPanel homePanel;
+    private javax.swing.JLabel imageLbl;
     private javax.swing.JLabel incorrectPasswordLbl;
     private javax.swing.JTextArea infoContents;
     private javax.swing.JLabel infoLbl;
@@ -1319,12 +1463,14 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JButton refuseBtn;
     private javax.swing.JButton registerBtn;
     private javax.swing.JPanel registerPanel;
+    private javax.swing.JLabel registerPicLbl;
     private javax.swing.JButton requestFriendshipBtn;
     private javax.swing.JPanel requestSection;
     private javax.swing.JLabel sharedSongsLbl;
     private javax.swing.JScrollPane sharedSongsList;
     private javax.swing.JList<String> sharedSongsListContents;
     private javax.swing.JButton stopBtn;
+    private javax.swing.JButton uploadPicBtn;
     private javax.swing.JLabel usernameDoesntExistLbl;
     private javax.swing.JLabel usernameExistsLbl;
     private javax.swing.JLabel usernameLbl;

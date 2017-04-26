@@ -16,13 +16,16 @@ import java.util.ArrayList;
  */
 public class chatServer {
     
-    static ArrayList<DataOutputStream> clients = new ArrayList<DataOutputStream>();
-    static ArrayList<Socket> clientsSockets = new ArrayList<Socket>();
-    
+    private static ArrayList<ServerHandler.user> userAL = new ArrayList<ServerHandler.user>();
     
     chatServer() {
         
-    } 
+    }
+            
+
+    
+        
+     
     
     
     public static void main(String args[]) {
@@ -36,14 +39,9 @@ public class chatServer {
                 
                 Socket socket = ss.accept();
                 
-                clientsSockets.add(socket);
-                
-                DataOutputStream os = new DataOutputStream(socket.getOutputStream());
-                clients.add(os);
-                
                 
                                                 
-                ServerHandler sHandler = new ServerHandler(socket, clientsSockets);
+                ServerHandler sHandler = new ServerHandler(socket, userAL);
                 
                 Thread t = new Thread(sHandler);
                 t.start();
@@ -54,4 +52,6 @@ public class chatServer {
         }  catch (Exception e) {}
         
     }
+    
+    
 }

@@ -66,8 +66,7 @@ public class MultipleSocketServer implements Runnable{
     @Override
     public void run() {
         try {
-            
-                System.out.println("trying");
+
                 
                 DataInputStream inFromClient = new DataInputStream(csocket.getInputStream());
                
@@ -85,69 +84,69 @@ public class MultipleSocketServer implements Runnable{
                 if (strArray[0].equals("login"))
                 {
                     //run login function
-                    System.out.println("Running login writing function");
+                    
                     checkLoginFile(str);
                 }
                 else if (strArray[0].equals("register"))
                 {
                     //run register function
-                    System.out.println("Running register function");
+                   
                     checkRegisterFile(str);
                 } 
                 else if (strArray[0].equals("logout")) {
-                    System.out.println("Logging out");
+                    
                     logout(str);
                 }
                 
                 //Home Screen Updates
                 else if (strArray[0].equals("connectedPeople")) {
-                    System.out.println("Updating connected people");
+                    
                     updateConnectedPeople();
                 }
                 else if (strArray[0].equals("friendsList")) {
-                    System.out.println("Loading friends list");
+                    
                     loadFriendsList(strArray[1]);
                 }
                 else if (strArray[0].equals("friendsInfo")) {
-                    System.out.println("Loading friends info");
+                    
                     updateFriendsInfo(strArray[1]);
                 }
                 
                 //Other functions
                 else if (strArray[0].equals("playSong")) {
-                    System.out.println("Play song function");
-                    System.out.println(strArray[1]);
+                    
+                   
                     playSong(strArray[1]);
                 }          
                 else if (strArray[0].equals("stopSong")) {
-                    System.out.println("Stop song function");
+                    
                     stopSong();
                 }   
                 else if (strArray[0].equals("postToFile")) {
-                    System.out.println("Post to file");
-                    System.out.println(strArray[1]);
+                   
+                    
                     postToFile(strArray[1]);
                 }
                 else if (strArray[0].equals("updateFeed")) {
-                    System.out.println("Updating feed");
+                    
                     updateFeed();
                 }
                 
                 //FRIEND FUNCTIONS
                 else if (strArray[0].equals("requestFriend")) {
-                    System.out.println("Adding to friendship request list");
+                    
                     requestFriend(str);
                 }
                 else if (strArray[0].equals("updateFriendRequests")) {
-                    System.out.println("Updating friend request list");
+                    
                     updateFriendRequests(strArray[1]);
                 }
                 else if (strArray[0].equals("acceptFriend")) {
-                    System.out.println("Accepting friend");
+                    
                     acceptFriend(str);
                 }
                 else if (strArray[0].equals("removeRequest")) {
-                    System.out.println("Removing request");
+                   
                     removeRequest(str);
                 }
                 
@@ -178,6 +177,7 @@ public class MultipleSocketServer implements Runnable{
         String[] packetArray = packet.split("~");
         boolean usernameExists = false;
         boolean passwordsMatch = false;
+        String imageStr = "";
 
         try {        
             
@@ -195,6 +195,7 @@ public class MultipleSocketServer implements Runnable{
                         
                     if (packetArray[2].equals(strArray[1])) {  //If the username exists, then need to check if the passwords match
                         passwordsMatch = true;
+                        imageStr = strArray[(strArray.length - 1)];
                     }
                 }
             }
@@ -208,7 +209,7 @@ public class MultipleSocketServer implements Runnable{
         if (usernameExists) {
             if (passwordsMatch) {
                 //store login details in current login array? *****************
-                sendToClient("correctLogin");
+                sendToClient("correctLogin~" + imageStr);
                 
                 //Add user to the currentLoginList
                 currentLoginList.add(packetArray[1]);
@@ -261,6 +262,7 @@ public class MultipleSocketServer implements Runnable{
                 fout.close();
                
                 copyMusic(packet);
+                copyImage(packet);
                 
                 //Add name to the friend requests file
                 FileWriter requestFout = new FileWriter("friendRequests.txt", true);
@@ -347,7 +349,6 @@ public class MultipleSocketServer implements Runnable{
                 String[] strArray = line.split(":");
                 
                 if (strArray[0].equals(user)) {
-                    System.out.println("user is: " + user);
                     
                     if (strArray.length > 1) {
                         String[] friendArray = strArray[1].split("~");
@@ -356,8 +357,6 @@ public class MultipleSocketServer implements Runnable{
                         }
                     }
                 }
-                
-                System.out.println("Friends are: " + friendsStr);
             }
     
             din.close();
@@ -414,6 +413,25 @@ public class MultipleSocketServer implements Runnable{
     
     //Other functions
     
+    private void copyImage(String str) {
+        String strArray[] = str.split("~");
+        
+        for (int i = 0; i < strArray.length; i++) {
+            if (strArray[i].contains(".png")) {
+                
+                try {
+                    File file = new File(strArray[i]); //Create the file to copy
+                    String name = file.getName(); 
+                    File target = new File(System.getProperty("user.dir")+"/icons",name);
+                    
+                    Path path = Paths.get(strArray[i]);     //Create a path for the file
+                    
+                    Files.copy(path, target.toPath(), REPLACE_EXISTING); //Copy the file
+                } catch (IOException e) {}
+            }
+        }
+    }
+    
     private void copyMusic(String str) {
         String strArray[] = str.split("~");
         
@@ -423,10 +441,8 @@ public class MultipleSocketServer implements Runnable{
                 try {
                     File file = new File(strArray[i]); //Create the file to copy
                     String name = file.getName(); 
-                    System.out.println("name of file: " + name);
                     File target = new File(System.getProperty("user.dir")+"/music",name);
                     
-                    System.out.println(target.toString());
                     Path path = Paths.get(strArray[i]);     //Create a path for the file
                     
                     Files.copy(path, target.toPath(), REPLACE_EXISTING); //Copy the file
@@ -443,9 +459,7 @@ public class MultipleSocketServer implements Runnable{
                 
                 File file = new File(System.getProperty("user.dir")+"/music", str);
 
-                
-                
-                System.out.println("file: " + file.toString());
+
                 InputStream in = new FileInputStream(file);
                 
                 BufferedInputStream bis = new BufferedInputStream(in);
@@ -455,15 +469,6 @@ public class MultipleSocketServer implements Runnable{
                 
                 player.play();
                 
-
-                //audioStream = new AudioStream(in);
-
-                //AudioPlayer.player.start(audioStream);
-
-                System.out.println("Song playing");
-                
-                
-
             } catch (Exception e) {}
         
 
@@ -483,11 +488,7 @@ public class MultipleSocketServer implements Runnable{
     }
     
     private void postToFile(String updatePost){
-        
-        //String[] updatePostArray = updatePost.split("~");
-        //String newPost = updatePost.replace("postToFile~", "");
-        System.out.println(updatePost);
-        
+       
         
         try {
 
@@ -658,11 +659,9 @@ public class MultipleSocketServer implements Runnable{
                             line = lineArray[0] + ":";
 
                             if ((!requestArray[i].equals(strArray[1])) && (!requestArray[i].equals(""))) {   
-                                System.out.println("requestArray[i]: " + requestArray[i]);
-                                System.out.println("strArray[1]: " + strArray[1]);
+
                                 line += "~" + requestArray[i];
 
-                                System.out.println("LINE: " + line);
                             }
                         }
                     

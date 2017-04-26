@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+
 /**
  *
  * @author Daniel
@@ -17,47 +18,77 @@ import java.util.ArrayList;
 class ServerHandler extends Thread {
     
     private Socket socket;
-    ArrayList<DataOutputStream> clients = new ArrayList<DataOutputStream>();
-    ArrayList<Socket> clientsSockets = new ArrayList<Socket>();
+    
+    ArrayList<user> userAL = new ArrayList<user>();
+
+    
+    
+    
+    class user {
+        public String username;
+        public Socket socket;
         
-    public ServerHandler(Socket socket, ArrayList<Socket> clientsSockets) {
+        user(String _username, Socket _socket) {
+            this.username = _username;
+            this.socket = _socket;
+        }
+    }    
+    
+    
+    
+    
+    
+    public ServerHandler(Socket socket, ArrayList<user> userAL) {
         this.socket = socket;
-        this.clientsSockets = clientsSockets;
+        this.userAL = userAL;
     }
 
+    
+    
     
     @Override
     public void run() {
         try {
-            
-                       
-          //  ArrayList<DataOutputStream> clients = new ArrayList<DataOutputStream>();
-           // ArrayList<String> clientNames = new ArrayList<String>();
-            
-                                     
+                            
             DataInputStream inFromClient = new DataInputStream(socket.getInputStream());
+           
+            //DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
+                       
             
-         //   DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
-            
-            
-            //clients.add(outToClient);
-            
-            System.out.println("OutputStream added");
-            System.out.println("Number of sockets: " + clientsSockets.size());
-            
-            
-            String line  = null;
+            String line  = "";
             while (true) {
                 line = inFromClient.readUTF();
-                System.out.println("Received message: " + line);
+                System.out.println("Received message: " + line + " from socket: " + socket);
                 
-                                
-                for (int i = 0; i < clientsSockets.size(); i++) {
-                    Socket clientSocket = clientsSockets.get(i);
-                    DataOutputStream oss = new DataOutputStream(clientSocket.getOutputStream());
-                    oss.writeUTF(line);
-                    System.out.println("sent");
-                    oss.flush();
+                String[] strArray = line.split("~");
+
+                
+                if (strArray[0].equals("add")) {
+
+                    
+                    
+                    
+
+                        
+                    
+                    user u = new user(strArray[1], socket);
+
+                    userAL.add(u);
+                                        
+                } else {
+                    
+                    
+                    //NORMAL MESSAGE FORMAT ---- strArray[0] = user ---- strArray[1] = friend ---- strArray[2] = message
+
+
+                    for (int i = 0; i < userAL.size(); i++) {
+                        if ((userAL.get(i).username).equals(strArray[1])) {
+                            DataOutputStream outToClient = new DataOutputStream(userAL.get(i).socket.getOutputStream());
+                            outToClient.writeUTF(strArray[0] + "~" + strArray[2]);
+                        }
+                        
+                    }                   
+                                 
                 }
                 
             }
