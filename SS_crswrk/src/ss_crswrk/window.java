@@ -103,10 +103,10 @@ public class window extends javax.swing.JFrame {
         goToRegisterBtn = new javax.swing.JButton();
         passwordLbl = new javax.swing.JLabel();
         usernameTxtFld = new javax.swing.JTextField();
-        passwordTxtFld = new javax.swing.JTextField();
         loginBtn = new javax.swing.JButton();
         incorrectPasswordLbl = new javax.swing.JLabel();
         usernameDoesntExistLbl = new javax.swing.JLabel();
+        passwordTxtFld = new javax.swing.JPasswordField();
         registerPanel = new javax.swing.JPanel();
         rUsernameLbl = new javax.swing.JLabel();
         backToLoginBtn = new javax.swing.JButton();
@@ -216,12 +216,6 @@ public class window extends javax.swing.JFrame {
             }
         });
 
-        passwordTxtFld.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordTxtFldActionPerformed(evt);
-            }
-        });
-
         loginBtn.setText("Login");
         loginBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -241,10 +235,10 @@ public class window extends javax.swing.JFrame {
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(loginPanelLayout.createSequentialGroup()
                 .addGap(148, 148, 148)
-                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(loginPanelLayout.createSequentialGroup()
                         .addComponent(incorrectPasswordLbl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                         .addComponent(usernameDoesntExistLbl))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
                         .addComponent(loginBtn)
@@ -256,9 +250,9 @@ public class window extends javax.swing.JFrame {
                             .addComponent(passwordLbl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordTxtFld, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(251, Short.MAX_VALUE))
+                            .addComponent(usernameTxtFld)
+                            .addComponent(passwordTxtFld))))
+                .addGap(251, 251, 251))
         );
 
         loginPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {goToRegisterBtn, loginBtn});
@@ -272,8 +266,8 @@ public class window extends javax.swing.JFrame {
                     .addComponent(usernameTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passwordTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordLbl))
+                    .addComponent(passwordLbl)
+                    .addComponent(passwordTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(goToRegisterBtn)
@@ -679,7 +673,7 @@ public class window extends javax.swing.JFrame {
 
         requestSection.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        connectedPeopleListLbl.setText("List of Connected People");
+        connectedPeopleListLbl.setText("List of People");
 
         connectedPeopleListContents.setModel(connectedPeopleModel);
         connectedPeopleListContents.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -839,10 +833,6 @@ public class window extends javax.swing.JFrame {
         changeScreen(loginPanel);
     }//GEN-LAST:event_backToLoginBtnActionPerformed
 
-    private void passwordTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTxtFldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_passwordTxtFldActionPerformed
-
     private void usernameTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameTxtFldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameTxtFldActionPerformed
@@ -850,7 +840,18 @@ public class window extends javax.swing.JFrame {
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         //Adding items to the register panel list
         String genre = musicDropdown.getSelectedItem().toString();
-        registerListModel.addElement(genre);
+        
+        boolean exists = false;
+        for (int i = 0; i < registerListModel.size(); i++) {
+            if (genre.equals(registerListModel.elementAt(i))) {
+                exists = true;
+            }
+        }
+        
+        if (!exists) {
+            registerListModel.addElement(genre);
+        }
+
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void postBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postBtnActionPerformed
@@ -870,9 +871,17 @@ public class window extends javax.swing.JFrame {
     }//GEN-LAST:event_postTxtFldActionPerformed
 
     private void requestFriendshipBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestFriendshipBtnActionPerformed
-   
-        String packet = "requestFriend~" + connectedPeopleListContents.getSelectedValue() + "~" + currentUser;
-        setupClient(packet);
+        String selectedPerson = connectedPeopleListContents.getSelectedValue();
+       
+        selectedPerson = selectedPerson.replaceAll("\\*", ""); 
+        
+        
+        String packet = "requestFriend~" + selectedPerson + "~" + currentUser;
+        
+        if (!connectedPeopleListContents.getSelectedValue().contains(" (friend)")) {
+            setupClient(packet);
+        }
+        
     }//GEN-LAST:event_requestFriendshipBtnActionPerformed
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
@@ -899,7 +908,9 @@ public class window extends javax.swing.JFrame {
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         
         int index = rGenreList.getSelectedIndex();
-        registerListModel.remove(index);
+        if (index > -1) {
+            registerListModel.remove(index);
+        }
 
         
     }//GEN-LAST:event_deleteBtnActionPerformed
@@ -909,7 +920,7 @@ public class window extends javax.swing.JFrame {
         ExecutorService service = Executors.newFixedThreadPool(4);
         service.submit(new Runnable() {
             public void run() {
-                System.out.println("THIS IS THE SONG YOU CLICKED: " + sharedSongsListContents.getSelectedValue());
+                setupClient("stopSong");
                 setupClient("playSong~" + sharedSongsListContents.getSelectedValue());
             }
         });
@@ -925,7 +936,7 @@ public class window extends javax.swing.JFrame {
         String PoBstr = PoBTxtFld.getText();
         String DoBstr = DoBTxtFld.getText();
         
-        if(usernameStr.equals("") || passwordStr.equals("") || PoBstr.equals("") || DoBstr.equals("")) {
+        if(usernameStr.equals("") || passwordStr.equals("") || PoBstr.equals("") || DoBstr.equals("") || imageString.equals("")) {
             fillAllFieldsLbl.setVisible(true);
             return;
         }
@@ -938,7 +949,7 @@ public class window extends javax.swing.JFrame {
             obj =  model.getElementAt(i);
             listStr+= "~" + obj.toString();
         }
-        System.out.println("listStr: " + listStr);
+
         //Check if the passwords match
         if (passwordStr.equals(confirmPasswordStr)) //checking that the passwords match
         {
@@ -1028,30 +1039,18 @@ public class window extends javax.swing.JFrame {
 
     private void sharedSongsListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_sharedSongsListContentsValueChanged
         boolean x = evt.getValueIsAdjusting();
-        if (x) {
-            System.out.println("Clicking song");
-        }
     }//GEN-LAST:event_sharedSongsListContentsValueChanged
 
     private void connectedPeopleListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_connectedPeopleListContentsValueChanged
         boolean x = evt.getValueIsAdjusting();
-        if (x) {
-            System.out.println("Clicking this friend: " + connectedPeopleListContents.getSelectedValue());
-        }
     }//GEN-LAST:event_connectedPeopleListContentsValueChanged
 
     private void friendshipRequestListContentsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendshipRequestListContentsValueChanged
         boolean x = evt.getValueIsAdjusting();
-        if (x) {
-            System.out.println("Clicking this friendship request: " + friendshipRequestListContents.getSelectedValue());
-        }
     }//GEN-LAST:event_friendshipRequestListContentsValueChanged
 
     private void rGenreListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_rGenreListValueChanged
         boolean x = evt.getValueIsAdjusting();
-        if (x) {
-            System.out.println("Clicking this genre: " + rGenreList.getSelectedValue());
-        }
     }//GEN-LAST:event_rGenreListValueChanged
 
     private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
@@ -1082,9 +1081,11 @@ public class window extends javax.swing.JFrame {
         chatWindow chat;
         try {
             if (connectedPeopleListContents.getSelectedValue() != null) {
-                chat = new chatWindow(str);
-                chat.setVisible(true);
-                chat.setDefaultCloseOperation(chatWindow.DISPOSE_ON_CLOSE);
+                if (connectedPeopleListContents.getSelectedValue().contains("*"))  {
+                    chat = new chatWindow(str);
+                    chat.setVisible(true);
+                    chat.setDefaultCloseOperation(chatWindow.DISPOSE_ON_CLOSE);
+                }
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
@@ -1178,8 +1179,12 @@ public class window extends javax.swing.JFrame {
             changeScreen(loginPanel);
             timer.cancel();
             timer.purge();
+            
             connectedPeopleModel.removeAllElements();
             friendsListModel.removeAllElements();
+            
+            friendImageLbl.setIcon(null);
+            friendImageLbl.setText(null);
         }
 
         //UPDATE HOME SCREEN
@@ -1197,12 +1202,6 @@ public class window extends javax.swing.JFrame {
         }
          
         //OTHER FUNCTIONS
-        else if (messageStr[0].equals("playingSong")) {
-            System.out.println("Playing song");
-        }
-        else if (messageStr[0].equals("stoppingSong")) {
-            System.out.println("Stopping song");
-        }
         else if (messageStr[0].equals("postUpdated")) {
             setupClient("updateFeed"); //Call function to update news feed once button is clicked and psot is written to file
         }
@@ -1309,8 +1308,6 @@ public class window extends javax.swing.JFrame {
                 String workingDirectory = currentRelativePath.toAbsolutePath().toString();
                 ImageIcon icon = new ImageIcon(workingDirectory+"\\icons\\"+imageName);
 
-                System.out.println("Path: " + icon);
-
                 if (workingDirectory != "") {
                     friendImageLbl.setIcon(icon);
                     friendImageLbl.setText(" " + strArray[1]);
@@ -1325,15 +1322,11 @@ public class window extends javax.swing.JFrame {
     private void updateFeed(String str) {
         String strArray[] = str.split("~");
         postListContents.setText(null);
-
-        
         
         for (int i = 1; i < strArray.length; i++) {
             String lineArray[] = strArray[i].split("- ");
             String secondLineArray[] = lineArray[1].split(":");
-            System.out.println("POST: " + secondLineArray[0]);
-            System.out.println("NAME: " + currentUser);
-            // || 
+
             if (secondLineArray[0].equals(currentUser)) {
                 postListContents.append(strArray[i] + "\n");
             }
@@ -1353,6 +1346,7 @@ public class window extends javax.swing.JFrame {
         
         for (int i = 1; i < strArray.length; i++) {
             friendRequestsListModel.addElement(strArray[i]);
+            
         }
         
     }
@@ -1442,7 +1436,7 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JPanel parentPanel;
     private javax.swing.JLabel passwordDontMatchLbl;
     private javax.swing.JLabel passwordLbl;
-    private javax.swing.JTextField passwordTxtFld;
+    private javax.swing.JPasswordField passwordTxtFld;
     private javax.swing.JButton playBtn;
     private javax.swing.JButton postBtn;
     private javax.swing.JLabel postLbl;

@@ -29,8 +29,7 @@ public class chatWindow extends javax.swing.JFrame {
      */
     public chatWindow(String str) throws InterruptedException {
         initComponents();
-        
-        System.out.println("str: " + str);
+
         
         String strArray[] = str.split("~");
         
@@ -140,7 +139,7 @@ public class chatWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        System.out.println("closing");
+        //CLOSING
     }//GEN-LAST:event_formWindowClosing
 
     private void sendMessageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMessageBtnActionPerformed
@@ -148,8 +147,7 @@ public class chatWindow extends javax.swing.JFrame {
         String message = composeMessageTxtFld.getText();       
         
         messagesTxtArea.append(user + ": " + message + "\n");
-        
-        
+              
         cc.sendMessage(user + "~" + friend + "~" + message);
 
     }//GEN-LAST:event_sendMessageBtnActionPerformed
@@ -163,8 +161,7 @@ public class chatWindow extends javax.swing.JFrame {
             
             
             cc = newClient.getChatClient();
-            
-            System.out.println("adding");
+
             
             
         } catch (Exception ex) { }

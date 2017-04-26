@@ -84,10 +84,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="148" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="incorrectPasswordLbl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="34" max="32767" attributes="0"/>
                               <Component id="usernameDoesntExistLbl" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
@@ -100,14 +100,14 @@
                                   <Component id="usernameLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="passwordLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="usernameTxtFld" min="-2" pref="210" max="-2" attributes="0"/>
-                                  <Component id="passwordTxtFld" alignment="1" min="-2" pref="210" max="-2" attributes="0"/>
+                                  <Component id="usernameTxtFld" max="32767" attributes="0"/>
+                                  <Component id="passwordTxtFld" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="251" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="251" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -121,8 +121,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="passwordTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="passwordLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="passwordTxtFld" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -163,11 +163,6 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="usernameTxtFldActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="passwordTxtFld">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="passwordTxtFldActionPerformed"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JButton" name="loginBtn">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Login"/>
@@ -191,6 +186,8 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Username doesn&apos;t exist."/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JPasswordField" name="passwordTxtFld">
             </Component>
           </SubComponents>
         </Container>
@@ -955,7 +952,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="connectedPeopleListLbl">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="List of Connected People"/>
+                    <Property name="text" type="java.lang.String" value="List of People"/>
                   </Properties>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="connectedPeopleList">

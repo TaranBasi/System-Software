@@ -45,7 +45,6 @@ public class MultipleSocketServer implements Runnable{
             
             try {
                 ServerSocket socket1 = new ServerSocket(port);
-                System.out.println("Socket connected");
                 
                 while (true){
                     Socket socket = socket1.accept();
@@ -54,7 +53,6 @@ public class MultipleSocketServer implements Runnable{
                     Thread thread = new Thread(runnable);
                     thread.start();
                     
-                    System.out.println("thread started");
                 } 
             }
             catch (Exception e) { }
@@ -71,10 +69,6 @@ public class MultipleSocketServer implements Runnable{
                 DataInputStream inFromClient = new DataInputStream(csocket.getInputStream());
                
                 String str = inFromClient.readUTF();
-
-                
-                //Recieved packet including process to do - string[0].
-                System.out.println("Recieved packet: " + str);
                 
                 //split string to get the process to do - login, register, etc.
                 String[] strArray = str.split("~");
@@ -134,7 +128,6 @@ public class MultipleSocketServer implements Runnable{
                 
                 //FRIEND FUNCTIONS
                 else if (strArray[0].equals("requestFriend")) {
-                    
                     requestFriend(str);
                 }
                 else if (strArray[0].equals("updateFriendRequests")) {
@@ -149,10 +142,7 @@ public class MultipleSocketServer implements Runnable{
                    
                     removeRequest(str);
                 }
-                
-                
-                
-                
+
                 inFromClient.close();
                 csocket.close();
                 
@@ -298,6 +288,8 @@ public class MultipleSocketServer implements Runnable{
             }
         }
         
+        player.close();
+        
         sendToClient("loggedOut");
     }
     
@@ -401,7 +393,7 @@ public class MultipleSocketServer implements Runnable{
             while ((line = din.readLine()) != null) {
                 posts += "~" + line; 
             }
-    
+   
             din.close();
             fin.close();
                     
@@ -452,22 +444,18 @@ public class MultipleSocketServer implements Runnable{
     }
     
     private void playSong(String str) {
-        
-        System.out.println(str);
-        
-            try {
-                
-                File file = new File(System.getProperty("user.dir")+"/music", str);
 
+        try {
+            
+            File file = new File(System.getProperty("user.dir")+"/music", str);
 
-                InputStream in = new FileInputStream(file);
+            InputStream in = new FileInputStream(file);
                 
-                BufferedInputStream bis = new BufferedInputStream(in);
+            BufferedInputStream bis = new BufferedInputStream(in);
+
+            player = new Player(bis);
                 
-               
-                player = new Player(bis);
-                
-                player.play();
+            player.play();
                 
             } catch (Exception e) {}
         
@@ -508,7 +496,6 @@ public class MultipleSocketServer implements Runnable{
     private void requestFriend(String str) {
         String strArray[] = str.split("~");
 
-        
         //strArray[2] is the current user
         
         try {

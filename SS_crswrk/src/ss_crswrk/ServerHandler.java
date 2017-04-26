@@ -58,18 +58,11 @@ class ServerHandler extends Thread {
             String line  = "";
             while (true) {
                 line = inFromClient.readUTF();
-                System.out.println("Received message: " + line + " from socket: " + socket);
                 
                 String[] strArray = line.split("~");
 
                 
                 if (strArray[0].equals("add")) {
-
-                    
-                    
-                    
-
-                        
                     
                     user u = new user(strArray[1], socket);
 

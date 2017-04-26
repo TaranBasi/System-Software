@@ -22,11 +22,6 @@ public class chatServer {
         
     }
             
-
-    
-        
-     
-    
     
     public static void main(String args[]) {
         
@@ -38,15 +33,12 @@ public class chatServer {
             while (true) {
                 
                 Socket socket = ss.accept();
-                
-                
-                                                
+         
                 ServerHandler sHandler = new ServerHandler(socket, userAL);
                 
                 Thread t = new Thread(sHandler);
                 t.start();
-    
-                
+      
             }
             
         }  catch (Exception e) {}

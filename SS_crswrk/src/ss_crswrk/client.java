@@ -32,8 +32,6 @@ public class client {
         try {           
             
             if (packetStr.equals("chat")) {
-                
-                System.out.println("Received chat");
 
                 cc = new chatClient();
                   
@@ -103,8 +101,6 @@ public class client {
             try {
                 
                 connection = new Socket(host, port);
-
-                System.out.println("Connection established on :" + connection);
                 
                 out = new DataOutputStream(connection.getOutputStream());
                 
